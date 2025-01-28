@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+
+.movie-content {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(65, 65, 65);
+  color: rgb(216, 216, 216)
+}
+
+.name-header {
+  position: absolute;
+  right: 0;
+  transform: translate(-50%);
+}
+.movie-intro {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%);
+}
+
+.input-area {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 0%);
+  width: 600px;
+  height: 300px;
+  
+  padding: 2em;
+  border: 2px solid black;
+  border-radius: 25px;
+}
+
+.lifeline-button {
+  border-radius: 25px;
+}
+
+
+.movie-search-results {
+
+  border: 2px solid gray;
+
+  .row {
+    &:hover {
+      cursor: pointer;
+      background-color: rgb(212, 248, 248);
+    }
+  }
+}
+
+.movies {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 3em;
+}
+
+.movie-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #212529;
+  color: #d0d6da;
+  border-radius: 15px;
+}
+
+
+
+
+.movie-menu {
+  width: 600px;
+
+}
+
+
+.movie-lobby {
+  margin-top: 4em;
+}
+
+
+.movie-front-page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+  
+  background-color: #2e2e2e;
+  color: #e7e5e5ec;
+
+}
+
+.menu-options {
+  h3, h4, h5 {
+    &:hover {
+      cursor: pointer;
+      color: rgb(75, 127, 204);
+    }
+  }
+} 
+
+
+.movie-menu-selected {
+  width: 400px;
+  height: 450px;
+  border: 2px solid rgb(104, 104, 104);
+  border-radius: 25px;
+  box-shadow: 0 0 6px rgb(78, 78, 78);
+  padding: 1em;
+  
+}
+
+
+
+.test {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.messages { 
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
