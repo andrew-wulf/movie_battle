@@ -61,6 +61,9 @@ export function MovieBattle() {
     socket.emit('app_data')
   }
 
+  const test = () => {
+    socket.emit('test')
+  }
 
   return (
     <div className='relative w-[100vw] h-[100vh] flex justify-center'>
@@ -73,6 +76,7 @@ export function MovieBattle() {
       <div className='absolute right-0 -translate-x-1/2'>
         <h5 className='text-white'>Socket: {}</h5>
         <button onClick={appData} className='bg-white text-black rounded-xl'>print app data</button>
+        <button onClick={test} className='bg-white text-black rounded-xl'>test</button>
       </div>
       <Content socket={socket} connected={connected}/>
     </div>

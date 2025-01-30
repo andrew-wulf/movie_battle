@@ -117,7 +117,6 @@ export function Room (props) {
     
 
     if (roomData) {
-        console.log(roomData)
         if (hasJoined) {
             
             return (
@@ -221,7 +220,7 @@ export function Room (props) {
 
 
 
-                    <Game roomData={roomData} socket={socket} roomId={roomID}/>
+                    <Game roomData={roomData} socket={socket} roomID={roomID}/>
                 </div>
             )
         }
