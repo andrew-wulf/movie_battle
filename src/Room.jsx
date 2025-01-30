@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { IoIosSend } from "react-icons/io";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { GameWindow } from "./GameWindow";
+import { Game } from "./Game";
+import { FaRegCopy } from "react-icons/fa";
 
 
 
@@ -12,8 +15,8 @@ export function Room (props) {
     const [nameInput, setNameInput] = useState("");
 
     const [msgInput, setMsgInput] = useState("");
-    const [msgCollapse, setMsgCollapse] = useState(false);
-    const [playerCollapse, setPlayerCollapse] = useState(false);
+    const [msgCollapse, setMsgCollapse] = useState(true);
+    const [playerCollapse, setPlayerCollapse] = useState(true);
 
 
     let socket = props.socket;
@@ -59,10 +62,11 @@ export function Room (props) {
         socket.on('room_status', (data) => {
           console.log('room status: ', data)
           if (data) {
-            setRoomData(testData);
+            setRoomData(data);
+            socket.emit('join_channel', roomID);
 
             let id = localStorage.getItem('id');
-            if (Object.keys(data).includes(id)) {
+            if (Object.keys(data.players).includes(id)) {
                 console.log('already in room.')
                 setHasJoined(true)
             }
@@ -70,6 +74,12 @@ export function Room (props) {
                 setHasJoined(false);   
             }
           }
+        });
+
+
+        socket.on('room_update', (data) => {
+            setRoomData(data);
+            console.log('update: ', data)
         })
       }, [socket])
     
@@ -77,20 +87,20 @@ export function Room (props) {
 
     const joinLobby = () => {
         socket.emit('update_name', nameInput);
-        socket.emit('join_lobby', roomID)
+        socket.emit('join_lobby', roomID);
+        socket.emit('join_channel', roomID);
+        socket.emit('room_status', roomID);
     }
 
     const postMsg = () => {
-        console.log(roomData.messages)
-        //let id = localStorage.getItem('id');
-        let id = 'id3'
-        let data = roomData;
-
-        data.messages.push([id, msgInput]);
-        setRoomData(data)
-        setMsgInput("");
-        console.log(roomData.messages)
+        if (msgInput.length > 0 && msgInput.length < 200) {
+            socket.emit('post_message', msgInput, roomID)
+            setMsgInput("");
+        }
     }
+
+
+
 
     let msgStyle = "absolute flex flex-col place-items-center right-10 bottom-32 w-96 h-[600px] overflow-hidden bg-black/65 text-gray-500 rounded-xl duration-800"
 
@@ -107,10 +117,11 @@ export function Room (props) {
     
 
     if (roomData) {
+        console.log(roomData)
         if (hasJoined) {
             
             return (
-                <div className="w-full h-full relative flex justify-center">
+                <div className="w-full h-full relative flex flex-col place-items-center">
                     <div className={playerStyle}>
 
                         <div className="px-12 pb-1 w-full flex flex-row place-items-center justify-between">
@@ -183,7 +194,13 @@ export function Room (props) {
                             <input className="mx-auto w-60 h-10 focus:bg-gray-600/10 text-sky-600 border border-gray-700/50 rounded-xl text-center"
                                 placeholder="type here to chat."
                                 value={msgInput}
-                                onChange={(e) => {setMsgInput(e.target.value)}}
+                                onChange={(e) => {
+                                    let msg = e.target.value;
+                                    if (msg.length > 0 && msg.length < 200) {
+                                        setMsgInput(e.target.value)
+                                    }
+                                }}
+                                onKeyDown={(e) => {if (e.key === 'Enter') {postMsg()}}}
                             >
                             </input>
                             <button className="ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
@@ -192,13 +209,19 @@ export function Room (props) {
                                 <IoIosSend className="w-6 h-6"/>
                             </button>
                         </div>
-                            
+                    </div>
 
+
+                    <div className='mt-10 ml-25 mr-auto flex flex-row gap-2 hover:cursor-pointer hover:text-gray-200 text-gray-400 place-items-center' 
+                        onClick={() => {navigator.clipboard.writeText(url); alert('copied invite link to clipboard.')}}
+                        >
+                        <FaRegCopy/>
+                        <h1 className="text-xl font-semibold tracking-tight">invite link</h1>
                     </div>
 
 
 
-                    <h1 className="mt-10 text-6xl font-semibold text-white tracking-tight">Room {roomID}</h1>
+                    <Game roomData={roomData} socket={socket} roomId={roomID}/>
                 </div>
             )
         }
@@ -216,11 +239,17 @@ export function Room (props) {
                         </p>
 
                         <input className='w-48 h-10 rounded-2xl border border-gray-700 text-center  focus:border-sky-600 focus:outline focus:outline-sky-600' 
-                        placeholder='Enter your nickname' value={nameInput} onChange={(e) => {setNameInput(e.target.value)}}>
+                            placeholder='Enter your nickname' 
+                            value={nameInput} onChange={(e) => {setNameInput(e.target.value)}}
+                            
+                            onKeyDown={(e) => {if (e.key === 'Enter') {joinLobby()}}}
+                            >
                         </input>
 
 
-                        <button className='mt-4 mb-6 w-32 h-9 rounded-xl bg-[rgb(67,199,50)] shadow-sm shadow-gray-500 hover:cursor-pointer hover:bg-[rgb(47,179,30)]' onClick={joinLobby}>
+                        <button className=' mt-4 mb-6 w-32 h-9 rounded-xl bg-[rgb(67,199,50)] shadow-sm shadow-gray-500 hover:cursor-pointer hover:bg-[rgb(47,179,30)]' 
+                            onClick={joinLobby}
+                            >
                             Join Room
                         </button>
                     </div>
