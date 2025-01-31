@@ -8,7 +8,8 @@ export function Input(props) {
     const [inputVal, setInputVal] = useState("");
 
     let socket = props.socket;
-
+    let roomData = props.roomData;
+    let roomID = props.roomID;
 
 
     const handleUpdate = (e) => {
@@ -52,7 +53,9 @@ export function Input(props) {
 
 
     const submit = (arr) => {
-        socket.emit('input_submit', arr);
+        if (roomData.game_data.current_id === localStorage.getItem('id') && roomData.game_data.running) {
+            socket.emit('input_submit', roomID, arr);
+        }
         setSearchResults([]);
         setInputVal("")
     }

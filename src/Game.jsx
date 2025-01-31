@@ -37,7 +37,7 @@ export function Game (props) {
 
 
         return (
-            <Input socket={socket}/>
+            <Input socket={socket} roomData={roomData} roomID={roomID}/>
         )
     }
 
