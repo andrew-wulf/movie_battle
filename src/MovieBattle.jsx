@@ -15,7 +15,7 @@ const socket = io.connect("http://localhost:4000", {
 export function MovieBattle() {
 
   const [connected, setConnected] = useState(false);
-
+  const [connectFail, setConnectFail] = useState(false);
 
   const connect = () => {
     let storageID = localStorage.getItem("id");
@@ -24,12 +24,16 @@ export function MovieBattle() {
     }
 
     console.log('connecting...')
+    socket.connect();
     console.log(socket)
-    if (socket.connected == false) {
-      socket.connect();
+
+    if (socket.connected === false) {
+      setConnectFail(true);
     }
   }
+  
   useEffect(connect, []);
+  
 
 
   useEffect(() => {
@@ -41,8 +45,7 @@ export function MovieBattle() {
       socket.emit('login', storageID, nickname)
     })
     socket.on("connected", () => {
-      setConnected(true);
-      console.log(`Connected!`)
+        setConnected(true);
     })
 
     socket.on("setStorageID", (id) => {
@@ -53,6 +56,7 @@ export function MovieBattle() {
     socket.on("app_data", (data) => {
       console.log(data)
     })
+
   }, [socket])
 
 
@@ -73,11 +77,6 @@ export function MovieBattle() {
       <div className="bg-auto absolute inset-0 -z-10 mix-blend-overlay bg-[rgb(61,62,87)]">
       </div>
 
-      <div className='absolute right-0 -translate-x-1/2'>
-        <h5 className='text-white'>Socket: {}</h5>
-        <button onClick={appData} className='bg-white text-black rounded-xl'>print app data</button>
-        <button onClick={test} className='bg-white text-black rounded-xl'>test</button>
-      </div>
       <Content socket={socket} connected={connected}/>
     </div>
   )

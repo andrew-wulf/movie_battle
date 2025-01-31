@@ -10,6 +10,7 @@ export function Input(props) {
     let socket = props.socket;
     let roomData = props.roomData;
     let roomID = props.roomID;
+    let myTurn = props.myTurn;
 
 
     const handleUpdate = (e) => {
@@ -53,18 +54,16 @@ export function Input(props) {
 
 
     const submit = (arr) => {
-        if (roomData.game_data.current_id === localStorage.getItem('id') && roomData.game_data.running) {
+        if (myTurn) {
             socket.emit('input_submit', roomID, arr);
         }
         setSearchResults([]);
         setInputVal("")
     }
 
-
-
     if (searchResults) {
         return (
-            <div className="mt-[800px] w-[500px] h-12 relative bottom-24">
+            <div className="mt-[200px] w-[500px] h-12 relative bottom-24">
                 <div className="z-0 absolute bottom-10 flex flex-col gap-2 w-[500px] text-black bg-[rgb(208,208,228)] text-lg rounded-t-xl overflow-hidden">
                     {
                         searchResults.map((obj, i) => {
@@ -81,29 +80,29 @@ export function Input(props) {
                 </div>
     
     
-                <input className="z-10 w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg"
+                <input className="z-10 w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
                     placeholder="Enter a movie title."
                     value={inputVal}
                     onChange={handleUpdate}
+                    disabled={!myTurn}
                 >
                 </input>
             </div>
         )
     }
-
     else {
         return (
-            <div className="mt-[800px] relative bottom-24 border border-white">
-
-                <input className="w-96 h-12 bg-gray-300 text-black rounded-xl text-center text-lg"
+            <div className="mt-[200px] w-[500px] h-12 relative bottom-24">
+                <input className="z-10 w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
                     placeholder="Enter a movie title."
                     value={inputVal}
                     onChange={handleUpdate}
+                    disabled={!myTurn}
                 >
                 </input>
             </div>
-        )    
+        )
     }
-
-
 }
+
+

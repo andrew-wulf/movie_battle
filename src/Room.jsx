@@ -4,6 +4,7 @@ import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { GameWindow } from "./GameWindow";
 import { Game } from "./Game";
 import { FaRegCopy } from "react-icons/fa";
+import { GameOverModal } from "./GameOverModal";
 
 
 
@@ -11,12 +12,16 @@ import { FaRegCopy } from "react-icons/fa";
 export function Room (props) {
 
     const [roomData, setRoomData] = useState(null);
+    const [roomExists, setRoomExists] = useState(true);
     const [hasJoined, setHasJoined] = useState(false);
     const [nameInput, setNameInput] = useState("");
 
     const [msgInput, setMsgInput] = useState("");
     const [msgCollapse, setMsgCollapse] = useState(true);
     const [playerCollapse, setPlayerCollapse] = useState(true);
+
+    const [myTurn, setMyTurn] = useState(false);
+
 
 
     let socket = props.socket;
@@ -62,6 +67,7 @@ export function Room (props) {
         socket.on('room_status', (data) => {
           console.log('room status: ', data)
           if (data) {
+            setRoomExists(true)
             setRoomData(data);
             socket.emit('join_channel', roomID);
 
@@ -73,6 +79,20 @@ export function Room (props) {
             else {
                 setHasJoined(false);   
             }
+            if (data.game_data) {
+                if (data.game_data.current_id === localStorage.getItem('id') && data.game_data.running) {
+                    setMyTurn(true);
+                }
+                else {
+                    setMyTurn(false);
+                }
+            }
+            else {
+                setMyTurn(false);
+            }
+          }
+          else {
+            setRoomExists(false);
           }
         });
 
@@ -80,6 +100,18 @@ export function Room (props) {
         socket.on('room_update', (data) => {
             setRoomData(data);
             console.log('update: ', data)
+
+            if (data.game_data) {
+                if (data.game_data.current_id === localStorage.getItem('id') && data.game_data.running) {
+                    setMyTurn(true);
+                }
+                else {
+                    setMyTurn(false);
+                }
+            }
+            else {
+                setMyTurn(false);
+            }
         })
       }, [socket])
     
@@ -101,7 +133,6 @@ export function Room (props) {
 
 
 
-
     let msgStyle = "absolute flex flex-col place-items-center right-10 bottom-32 w-96 h-[600px] overflow-hidden bg-black/65 text-gray-500 rounded-xl duration-800"
 
     if (!msgCollapse) {
@@ -111,7 +142,7 @@ export function Room (props) {
     let playerStyle = "absolute flex flex-col place-items-center left-10 top-32 w-64 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
 
     if (!playerCollapse) {
-        playerStyle = "absolute flex flex-col place-items-center left-10 top-32 w-64 h-20 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
+        playerStyle = "absolute flex flex-col place-items-center left-10 top-32 w-64 h-18 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
     }
  
     
@@ -123,8 +154,8 @@ export function Room (props) {
                 <div className="w-full h-full relative flex flex-col place-items-center">
                     <div className={playerStyle}>
 
-                        <div className="px-12 pb-1 w-full flex flex-row place-items-center justify-between">
-                            <h1 className="mx-auto text-2xl pt-4 text-gray-300 w-full text-center">Players</h1>
+                        <div className="pr-12 pb-1 w-full flex flex-row place-items-center justify-between">
+                            <h1 className="mx-auto text-2xl pt-4 text-gray-300 w-full text-center">Players ({Object.keys(roomData.players).length}/8)</h1>
                             <button className="mt-4 ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
                                 onClick={() => {setPlayerCollapse(!playerCollapse)}}
                             >
@@ -133,24 +164,36 @@ export function Room (props) {
                         </div>
                         {
                             Object.keys(roomData.players).map(id => {
-                                if (id === 'id3') {
+                                if (roomData.game_data && id === roomData.game_data.current_id) {
                                     return (
                                         <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15">
                                             <p className="text-3xl font-semibold text-green-300">
-                                                {roomData.players[id].name}
+                                                {(roomData.players[id].name)}
                                             </p>
                                         </div>
                                     )
                                 }
 
                                 else {
-                                    return (
-                                        <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15">
-                                            <p className="text-3xl font-semibold">
-                                                {roomData.players[id].name}
-                                            </p>
-                                        </div>
-                                    )
+
+                                    if (roomData.players[id].active === false) {
+                                        return (
+                                            <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15">
+                                                <p className="text-3xl font-semibold text-gray-600/80 line-through">
+                                                    {(roomData.players[id].name)}
+                                                </p>
+                                            </div>
+                                        )
+                                    }
+                                    else {
+                                        return (
+                                            <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15">
+                                                <p className="text-3xl font-semibold text-gray-500">
+                                                    {(roomData.players[id].name)}
+                                                </p>
+                                            </div>
+                                        )
+                                    }
                                 }
                                 
                             })
@@ -220,7 +263,8 @@ export function Room (props) {
 
 
 
-                    <Game roomData={roomData} socket={socket} roomID={roomID}/>
+                    <Game roomData={roomData} socket={socket} roomID={roomID} myTurn={myTurn}/>
+                    <GameOverModal show={roomData.status === 'finished' ? true : false} socket={socket} roomID={roomID} roomData={roomData}/>
                 </div>
             )
         }
@@ -258,10 +302,20 @@ export function Room (props) {
     }
 
     else {
-        return (
-            <div>
-                Loading
-            </div>
-        )
+        if (roomExists) {
+            return (
+                <div>
+                    <p className="absolute text-xl top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-gray-100/70">
+                        connecting...
+                    </p>
+                </div>
+            )
+        }
+        else {
+            window.location.href = '/'
+        }
     }
 }
+
+
+
