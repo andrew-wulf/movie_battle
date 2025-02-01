@@ -22,7 +22,7 @@ export function Room (props) {
 
     const [myTurn, setMyTurn] = useState(false);
 
-
+    const [test, setTest] = useState(false)
 
     let socket = props.socket;
     let connected = props.connected;
@@ -30,28 +30,6 @@ export function Room (props) {
     let url = window.location.href;
     let roomID = window.location.href.substring(url.lastIndexOf('/') + 1, url.length);
 
-    let testData = { players: {
-        'id1': {name: 'Tim'},
-        'id2': {name: 'Rachel'},
-        'id3': {name: 'Julie'},
-        'id4': {name: 'drew'},
-        'id5': {name: 'kiweenie'},
-        },
-        messages: [
-            ['id1', "Let’s go, team! We got this! 💪"],
-            ['id2', "Ugh, I totally knew that one! 😭"],
-            ['id3', "What’s the answer to this? Anyone know? 🤔"],
-            ['id4', "Shoutout to the leaderboard champs! 🔥"],
-            ['id5', "That question was so tricky, wow! 😅"],
-            ['id1', "Finally got one right! 🎉"],
-            ['id3', "I feel like the timer is going faster. Anyone else? ⏱️"],
-            ['id2', "How did I not know that?! 🤦‍♂️"],
-            ['id4', "This is so fun! Good luck, everyone! 🙌"],
-            ['id5', "The host is killing it tonight! 😂"],
-            ['id1', "Does anyone remember who won last week? 🤓"],
-            ['id3', "Okay, I’m calling it—I’m winning the next round! 😎"],
-          ]
-    }
 
     useEffect(() => {
         if (connected) {
@@ -164,37 +142,34 @@ export function Room (props) {
                         </div>
                         {
                             Object.keys(roomData.players).map(id => {
+
+                                let statusStyle = "hidden text-xl font-semibold text-green-700";
+                                if (roomData.players[id].ready && roomData.status !== "active") {
+                                    statusStyle = "text-xl font-semibold text-green-700"
+                                }
+
+                                let nameStyle = "text-3xl font-semibold text-gray-500"
                                 if (roomData.game_data && id === roomData.game_data.current_id) {
-                                    return (
-                                        <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15">
-                                            <p className="text-3xl font-semibold text-green-300">
-                                                {(roomData.players[id].name)}
-                                            </p>
-                                        </div>
-                                    )
+                                    nameStyle = "text-3xl font-semibold text-green-300"
                                 }
 
                                 else {
-
                                     if (roomData.players[id].active === false) {
-                                        return (
-                                            <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15">
-                                                <p className="text-3xl font-semibold text-gray-600/80 line-through">
-                                                    {(roomData.players[id].name)}
-                                                </p>
-                                            </div>
-                                        )
-                                    }
-                                    else {
-                                        return (
-                                            <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15">
-                                                <p className="text-3xl font-semibold text-gray-500">
-                                                    {(roomData.players[id].name)}
-                                                </p>
-                                            </div>
-                                        )
+                                        nameStyle = "text-3xl font-semibold text-gray-600/80 line-through"
                                     }
                                 }
+                            
+                                return (
+                                    <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15 flex flex-row gap-10 place-items-center">
+                                        <p className={nameStyle}>
+                                            {(roomData.players[id].name)}
+                                        </p>
+
+                                        <p className={statusStyle}>
+                                            ready!
+                                        </p>
+                                    </div>
+                                )
                                 
                             })
                         }
@@ -254,7 +229,7 @@ export function Room (props) {
                     </div>
 
 
-                    <div className='mt-10 ml-25 mr-auto flex flex-row gap-2 hover:cursor-pointer hover:text-gray-200 text-gray-400 place-items-center' 
+                    <div className='fixed top-10 left-25 flex flex-row gap-2 hover:cursor-pointer hover:text-gray-200 text-gray-400 place-items-center' 
                         onClick={() => {navigator.clipboard.writeText(url); alert('copied invite link to clipboard.')}}
                         >
                         <FaRegCopy/>
@@ -264,6 +239,7 @@ export function Room (props) {
 
 
                     <Game roomData={roomData} socket={socket} roomID={roomID} myTurn={myTurn}/>
+                    {/* <button className='fixed left-40 bottom-20 bg-black text-white rounded-lg w-20 h-10 hover:cursor-pointer z-100' onClick={() => {setTest(!test)}}>Test</button> */}
                     <GameOverModal show={roomData.status === 'finished' ? true : false} socket={socket} roomID={roomID} roomData={roomData}/>
                 </div>
             )

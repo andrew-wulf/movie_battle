@@ -8,31 +8,63 @@ export function GameOverModal(props) {
         socket.emit('start_match', roomID)
     }
 
-    if (props.show && roomData.game_data) {
+    if (roomData.game_data) {
+
+      let msg = <h1>
+                  Game Over
+                </h1>;
+
+      if (Object.keys(roomData.players).length > 1 && roomData.game_data.winner_id) {
+        msg = <h1>
+                  <b className="font-normal text-gray-200">{roomData.players[roomData.game_data.winner_id].name}</b> is the Winner!
+              </h1>;
+      }
+
+      let hiddenStyle = ""
+      if (props.show) {
+        hiddenStyle = "opacity-100 duration-[4s] delay-[1.8s] ease-in fixed w-[600px] h-[400px] bg-black/85 text-gray-300/85 rounded-2xl flex flex-col justify-between py-10 place-items-center text-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group"
+      }
+      else {
+        hiddenStyle = "opacity-0 fixed w-[600px] h-[400px] bg-black/65 text-gray-300/85 rounded-2xl flex flex-col justify-between py-10 place-items-center text-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-20 group"
+      }
+
+      let buttonMsg = "Play Again"
+      let buttonStyle = "mt-5 mb-5 mx-auto w-40 min-h-10 bg-blue-600/80 shadow-md shadow-gray-900 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
+      if (Object.keys(roomData.players).length > 1) {
+          buttonMsg = "Vote for Rematch"
+
+          let myID = localStorage.getItem('id');
+  
+          if (roomData.players[myID].ready) {
+              buttonMsg = "Ready"
+              buttonStyle = "mt-5 mb-5 mx-auto w-40 min-h-10 bg-blue-700/80 shadow-md shadow-gray-900 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
+          }
+      }
+      let roundcount = ""
+      let history = roomData.game_data.history
+
+      if (history) {
+        roundcount = history.length - 1
+      }
 
       return (
-        <div onClick={props.onClose} className="fixed top-0 left-0 w-full h-full bg-gray-700/25 dark:bg-[rgb(6,6,16)]/80 z-10">
-          <section onClick={(e) => {e.stopPropagation(); }} className="fixed w-[600px] h-[400px] bg-black/65 text-gray-300/85 rounded-2xl flex flex-col justify-between py-10 place-items-center text-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group">
-
-            <h1>
-                <b className="font-normal text-gray-200">{roomData.players[roomData.game_data.winner_id].name}</b> is the Winner!
-            </h1>
+          <section onClick={(e) => {e.stopPropagation(); }} className={hiddenStyle}>
+            {msg}
             <p>
-                You lasted <b className="font-normal text-gray-200">{roomData.game_data.history.length - 1} rounds.</b>
+                You lasted <b className="font-normal text-gray-200">{roundcount} rounds.</b>
             </p>
 
             <p>
                 Play again?
             </p>
 
-            <button className="mt-5 mb-5 mx-auto w-40 min-h-10 bg-blue-600/80 shadow-md shadow-gray-900 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
+            <button className={buttonStyle}
                 onClick={startMatch}
                 >
-                    Play Again
+                    {buttonMsg}
             </button>
   
           </section>
-        </div>
       );
     }
   }

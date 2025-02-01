@@ -57,6 +57,10 @@ export function MovieBattle() {
       console.log(data)
     })
 
+    socket.on("reset", () => {
+      window.location.href = "/"
+    })
+
   }, [socket])
 
 
@@ -72,7 +76,7 @@ export function MovieBattle() {
   return (
     <div className='relative w-[100vw] h-[100vh] flex justify-center'>
 
-      <div className=" absolute inset-0 transition-all -z-10 bg-radial-[at_50%_50%] from-[rgb(60,71,231)] to-[rgb(2,7,72)]">
+      <div className="absolute inset-0 transition-all -z-10 bg-radial-[at_50%_50%] from-[rgb(60,71,231)] to-[rgb(2,7,72)]">
       </div>
       <div className="bg-auto absolute inset-0 -z-10 mix-blend-overlay bg-[rgb(61,62,87)]">
       </div>
