@@ -1,8 +1,9 @@
-# React + Vite
+# Movie Battle
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a new project, a longer description coming soon!
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## The Gist
+This is a frontend react app that's meant to connect to an express/socket.io server. 
+The server handles all the data, api calls and game logic, and the front end updates based on the data provided in each callback.
+The front end displays information in a progressive manner, cycling through menus and game responses based on what is and isn't featured in the data.
+The result is interactive, real-time gameplay that is unfazed by accidental refreshes or connectivity issues.
