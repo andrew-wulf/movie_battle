@@ -6,11 +6,11 @@ import { Content } from './Content';
 
 import { useEffect, useState } from 'react';
 
+console.log(process.env.NODE_ENV)
 
-const socket = io.connect("http://localhost:4000", {
+const socket = io.connect(process.env.NODE_ENV === "development" ? "http://localhost:4000" : "https://movie-battle-server-2ff362fad49d.herokuapp.com/", {
   autoConnect: false
 });
-
 
 export function MovieBattle() {
 
