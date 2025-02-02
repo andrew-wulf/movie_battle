@@ -5,6 +5,7 @@ import { GameWindow } from "./GameWindow";
 import { Game } from "./Game";
 import { FaRegCopy } from "react-icons/fa";
 import { GameOverModal } from "./GameOverModal";
+import { Timer } from "./Timer";
 
 
 
@@ -21,6 +22,10 @@ export function Room (props) {
     const [playerCollapse, setPlayerCollapse] = useState(true);
 
     const [myTurn, setMyTurn] = useState(false);
+
+    const [timerDuration, setTimerDuration] = useState(0);
+    const [timerRemaining, setTimerRemaining] = useState(0);
+    const [timerKey, setTimerKey] = useState(10000);
 
     const [test, setTest] = useState(false)
 
@@ -42,57 +47,51 @@ export function Room (props) {
 
 
     useEffect(() => {
-        socket.on('room_status', (data) => {
-          console.log('room status: ', data)
-          if (data) {
-            setRoomExists(true)
-            setRoomData(data);
-            socket.emit('join_channel', roomID);
-
-            let id = localStorage.getItem('id');
-            if (Object.keys(data.players).includes(id)) {
-                console.log('already in room.')
-                setHasJoined(true)
-            }
-            else {
-                setHasJoined(false);   
-            }
-            if (data.game_data) {
-                if (data.game_data.current_id === localStorage.getItem('id') && data.game_data.running) {
-                    setMyTurn(true);
-                }
-                else {
-                    setMyTurn(false);
-                }
-            }
-            else {
-                setMyTurn(false);
-            }
-          }
-          else {
-            setRoomExists(false);
-          }
-        });
-
-
         socket.on('room_update', (data) => {
-            setRoomData(data);
             console.log('update: ', data)
+            if (data) {
+                setRoomExists(true)
+                setRoomData(data);
+                socket.emit('join_channel', roomID);
 
-            if (data.game_data) {
-                if (data.game_data.current_id === localStorage.getItem('id') && data.game_data.running) {
-                    setMyTurn(true);
+                let id = localStorage.getItem('id');
+                if (Object.keys(data.players).includes(id)) {
+                    setHasJoined(true)
+                }
+                else {
+                    console.log("Haven't joined the room yet.")
+                    setHasJoined(false);   
+                }
+
+                if (data.game_data) {
+                    if (data.game_data.current_id === localStorage.getItem('id') && data.game_data.running) {
+                        setMyTurn(true);
+                    }
+                    else {
+                        setMyTurn(false);
+                    }
+                }
+                if (data.timer) {
+                    setTimerDuration(data.timer.duration);
+                    setTimerRemaining(data.timer.remaining);
                 }
                 else {
                     setMyTurn(false);
                 }
             }
             else {
-                setMyTurn(false);
+                setRoomExists(false)
             }
+
         })
       }, [socket])
-    
+
+
+    useEffect(() => {
+        if (timerRemaining === timerDuration && timerRemaining > 0) {
+            setTimerKey(timerKey + 1);
+        }
+    }, [timerRemaining, timerDuration])
 
 
     const joinLobby = () => {
@@ -238,9 +237,10 @@ export function Room (props) {
 
 
 
-                    <Game roomData={roomData} socket={socket} roomID={roomID} myTurn={myTurn}/>
+                    <Game roomData={roomData} socket={socket} roomID={roomID} myTurn={myTurn} duration={timerDuration} remaining={timerRemaining} setRemaining={setTimerRemaining} timerKey={timerKey}/>
                     {/* <button className='fixed left-40 bottom-20 bg-black text-white rounded-lg w-20 h-10 hover:cursor-pointer z-100' onClick={() => {setTest(!test)}}>Test</button> */}
                     <GameOverModal show={roomData.status === 'finished' ? true : false} socket={socket} roomID={roomID} roomData={roomData}/>
+
                 </div>
             )
         }

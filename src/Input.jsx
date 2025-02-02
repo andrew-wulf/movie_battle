@@ -63,7 +63,7 @@ export function Input(props) {
 
     if (searchResults) {
         return (
-            <div className="mt-[280px] w-[500px] h-12 relative bottom-24">
+            <div className="w-[500px] h-12 relative bottom-24">
                 <div className="z-0 absolute bottom-10 flex flex-col gap-2 w-[500px] text-black bg-[rgb(208,208,228)] text-lg rounded-t-xl overflow-hidden">
                     {
                         searchResults.map((obj, i) => {
@@ -92,7 +92,7 @@ export function Input(props) {
     }
     else {
         return (
-            <div className="mt-[200px] w-[500px] h-12 relative bottom-24">
+            <div className="w-[500px] h-12 relative bottom-24">
                 <input className="z-10 w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
                     placeholder="Enter a movie title."
                     value={inputVal}

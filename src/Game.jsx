@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "./Input";
+import { Timer } from "./Timer";
 
 export function Game (props) {
 
@@ -7,6 +8,7 @@ export function Game (props) {
     const [lifelines, setLifelines] = useState(true);
     const [banOption, setBanOption] = useState(false);
     const[hardMode, setHardMode] = useState(false);
+    const[randomStart, setRandomStart] = useState(false);
 
 
     let roomData = props.roomData;
@@ -16,6 +18,24 @@ export function Game (props) {
 
     let gameData = roomData.game_data;
 
+
+    
+    // useEffect(() => {
+    //     socket.on('timer_status', (timer) => {
+    //         console.log(2)
+    //         setCurrentTimer(<div className="absolute left-[200px] bottom-[200px]">
+    //                             <Timer duration={timer.duration} remaining={timer.remaining}/>
+    //                         </div>)
+    //         })
+    //     socket.on('room_update', (data) => {
+    //         console.log(3)
+    //         if (data.game_data && data.status === 'active' && data.timer) {
+    //             setCurrentTimer(<div className="absolute left-[200px] bottom-[200px]">
+    //                                 <Timer duration={data.timer.duration} remaining={data.timer.remaining}/>
+    //                             </div>)
+    //         }
+    //     })
+    // }, [socket])
 
 
     const startMatch = () => {
@@ -38,6 +58,8 @@ export function Game (props) {
                 buttonStyle = "mt-5 mb-5 mx-auto w-40 min-h-10 bg-blue-800/80 shadow-md shadow-gray-400 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
             }
         }
+
+        let myID = localStorage.getItem('id')
       
         return (
             <div className="flex flex-col gap-4 place-items-center mt-20 w-[400px] bg-[rgb(231,229,240)] rounded-3xl">
@@ -50,6 +72,7 @@ export function Game (props) {
                         <input type="checkbox" value="" className="sr-only peer"
                             checked={lifelines}
                             onChange={() => {setLifelines(!lifelines)}}
+                            disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                         />
                         <div className="relative w-11 h-6 bg-[rgb(194,191,204)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
                         <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Lifelines</span>
@@ -59,6 +82,7 @@ export function Game (props) {
                         <input type="checkbox" value="" className="sr-only peer"
                             checked={banOption}
                             onChange={() => {setBanOption(!banOption)}}
+                            disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                         />
                         <div className="relative w-11 h-6 bg-[rgb(189,185,206)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
                         <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Bans</span>
@@ -68,11 +92,21 @@ export function Game (props) {
                         <input type="checkbox" value="" className="sr-only peer"
                             checked={hardMode}
                             onChange={() => {setHardMode(!hardMode)}}
+                            disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                         />
                         <div className="relative w-11 h-6 bg-[rgb(189,185,206)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
                         <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Hard Mode</span>
                     </label>
 
+                    <label className="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" className="sr-only peer"
+                            checked={randomStart}
+                            onChange={() => {setRandomStart(!randomStart)}}
+                            disabled={Object.keys(roomData.players)[0] === myID ? false : true}
+                        />
+                        <div className="relative w-11 h-6 bg-[rgb(189,185,206)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
+                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Random Start Movie</span>
+                    </label>
 
                 </div>
 
@@ -103,6 +137,7 @@ export function Game (props) {
         else {
           hiddenStyle = "opacity-100 place-items-center h-full"
         }
+        
     
     
         let history = gameData.history
@@ -226,8 +261,11 @@ export function Game (props) {
     
                     </div>
                 </div>
-    
-                <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>        
+                
+                <div className="w-[700px] mt-[280px] relative flex justify-center items-center">
+                    <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
+                    <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>
+                </div>
             </div>
             )
         }
