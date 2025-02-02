@@ -278,6 +278,11 @@ export function Game (props) {
                                                             <h1 className="text-3xl">Out of Time!</h1>
                                                         </>
                                         }
+                                        else {
+                                            content =   <>
+                                                            <h1 className="text-3xl line-through text-center italic">{guess.title}</h1>
+                                                        </>
+                                        }
                                         return (
                                             <div key={i} className="place-items-center">
                                                 <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
