@@ -7,8 +7,9 @@ export function Game (props) {
 
     const [lifelines, setLifelines] = useState(true);
     const [banOption, setBanOption] = useState(false);
-    const[hardMode, setHardMode] = useState(false);
-    const[randomStart, setRandomStart] = useState(false);
+    const [hardMode, setHardMode] = useState(false);
+    const [randomStart, setRandomStart] = useState(false);
+    const [isPopular, setIsPopular] = useState(true);
 
 
     let roomData = props.roomData;
@@ -46,7 +47,7 @@ export function Game (props) {
     if (roomData.status !== 'active' && roomData.status !== 'finished') {
 
         let buttonMsg = "Play Solo"
-        let buttonStyle = "mt-5 mb-5 mx-auto w-40 min-h-10 bg-blue-600/80 shadow-md shadow-gray-400 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
+        let buttonStyle = "mt-2 mb-5 mx-auto w-40 min-h-10 bg-blue-600/80 shadow-md shadow-gray-400 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
 
         if (Object.keys(roomData.players).length > 1) {
             buttonMsg = "Vote to Start"
@@ -67,7 +68,10 @@ export function Game (props) {
                 <h1 className=" text-2xl font-semibold mt-4">
                     Options
                 </h1>
-                <div className="flex flex-col gap-4">
+
+                <p className="font-semibold text-black/95">These don't do anything yet, coming soon!</p>
+
+                <div className="flex flex-col gap-4 ">
                     <label className="inline-flex items-center cursor-pointer">
                         <input type="checkbox" value="" className="sr-only peer"
                             checked={lifelines}
@@ -105,9 +109,28 @@ export function Game (props) {
                             disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                         />
                         <div className="relative w-11 h-6 bg-[rgb(189,185,206)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
-                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Random Start Movie</span>
+                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Random Start</span>
                     </label>
+                </div>
 
+                <div className={randomStart === true ? "block" : "hidden"}>
+                    <p className="mt-4 mb-2 text-center text-xl font-semibold tracking-tight">Starting Movie</p>
+                    <div className="inline-flex mb-2 w-80">
+                        <div className={isPopular === true ? "bg-gray-400" : "bg-gray-300"}>
+                            <button className=" hover:shadow-md shadow:blue-700 text-gray-800 font-bold py-2 px-4 rounded-l hover:cursor-pointer"
+                                onClick={() => {setIsPopular(true)}}
+                            >
+                                Random Popular
+                            </button> 
+                        </div>
+                        <div className={isPopular === true ? "bg-gray-300" : "bg-gray-400"}>
+                            <button className=" hover:shadow-md shadow:blue-700 text-gray-800 font-bold py-2 px-4 rounded-r hover:cursor-pointer"
+                                onClick={() => {setIsPopular(false)}}
+                            >
+                                Random Top Rated
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <button className={buttonStyle}
@@ -144,6 +167,8 @@ export function Game (props) {
     
     
         if (history) {
+
+            let img = <></>
     
             return (
     
@@ -151,6 +176,9 @@ export function Game (props) {
                 {/* <h1 className="text-6xl text-gray-50/100 tracking-loose font-semibold hover:cursor-pointer">
                     {msg}
                 </h1> */}
+                
+                <img key={history[0].image} src={history[0].image} className="absolute h-[260px] top-[460px] left-1/2 -translate-x-1/2 rounded-xl animate-fade-out-scale" style={{animationDelay: '5s'}}/>
+                             
     
                 <div className="relative mx-auto min-w-[600px] min-h-[600px] flex flex-col overflow-hidden">
                     <div className="absolute bottom-0 w-full flex flex-col -translate-y-40 duration-[2s] ease-in">
@@ -159,9 +187,10 @@ export function Game (props) {
     
                                 if (i === 0) {
                                     return (
-                                        <div key={i} className="pt-[200px] flex flex-col">
-                                            <div key={i} className="mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-[rgb(216,213,235)] text-[rgb(15,15,11)] rounded-3xl">
-                                                <h1 className="text-3xl mb-4 italic">{guess.title}</h1>
+                                        <div key={i} className="relative pt-[200px] flex flex-col">
+
+                                            <div key={i} className="relative mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-[rgb(216,213,235)] text-[rgb(15,15,11)] rounded-3xl">
+                                                <h1 className="text-3xl mb-4 italic z-20">{guess.title}</h1>
     
                                                 {
                                                     ['director', 'screenplay', 'cinematographer', 'composer', 'editor', 'cast'].map((title, i) => {
@@ -174,14 +203,14 @@ export function Game (props) {
                                                                 title = 'Notable Cast'
                                                             }
                                                             return (
-                                                                <div key={`${i}A`}>
+                                                                <div key={`${i}A`} className="z-20">
                                                                     <b>{capitalizeFirstLetter(title)}:</b> {val}
                                                                 </div>
                                                             )
                                                         }
                                                     })
                                                 }
-    
+
                                             </div>
                                         </div>
                                 )
@@ -237,16 +266,23 @@ export function Game (props) {
                                         )
                                     }
                                     else {
-                                        let msg = <></>;
+                                        let content = <></>;
                                         if (guess.success === 'taken') {
-                                            msg = <p>Already Used!</p>
+                                            content =   <>
+                                                            <h1 className="text-3xl line-through text-center italic">{guess.title}</h1>
+                                                            <p className="text-3xl mb-2">Already Used!</p>
+                                                        </>
+                                        }
+                                        if (guess.success === 'expired') {
+                                            content =   <>
+                                                            <h1 className="text-3xl">Out of Time!</h1>
+                                                        </>
                                         }
                                         return (
                                             <div key={i} className="place-items-center">
                                                 <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
                                                 <div className="mx-auto w-[500px] p-4 flex flex-col place-items-center bg-[rgb(224,104,104)] text-[rgb(15,15,11)] rounded-3xl">
-                                                    <h1 className="text-3xl line-through text-center italic">{guess.title}</h1>
-                                                    {msg}
+                                                    {content}
                                                     <h1 className="text-2xl text-center font-semibold">Current movie: <b className="italic font-bold tracking-tight">{history[i - 1].title}</b> </h1>
                                                     {/* <div key={i} className="text-4xl text-[rgb(70,20,20)]">
                                                         &#x2715;
