@@ -26,7 +26,7 @@ export function MovieBattle() {
 
     console.log('connecting...')
     socket.connect();
-    console.log(socket)
+    //console.log(socket)
 
     if (socket.connected === false) {
       setConnectFail(true);

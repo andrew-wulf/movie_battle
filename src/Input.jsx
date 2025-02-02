@@ -29,12 +29,13 @@ export function Input(props) {
             console.log(arr)
             setSearchResults(arr[1]);
             cached = true;
-            console.log('CACHE: ', arr[1])
+            //console.log('CACHE: ', arr[1])
           }
         })
     
         if (cached === false) {
-            if (val.length > 1 && searchCache[searchCache.length - 1][1].length < 1) {
+            console.log(searchCache)
+            if (val.length > 1 && searchCache.length > 0 && searchCache[searchCache.length - 1][1].length < 1) {
                 setSearchCache(searchCache => [...searchCache, [val, []]])
             }
             else {
@@ -46,7 +47,7 @@ export function Input(props) {
 
     useEffect(() => {
         socket.on('recieve_input_update', (val, res) => {
-        console.log(val, res);
+        //console.log(val, res);
         setSearchCache(searchCache => [...searchCache, [val, res]])
         setSearchResults(res);
         })

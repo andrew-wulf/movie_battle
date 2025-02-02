@@ -10,7 +10,10 @@ export function Game (props) {
     const [hardMode, setHardMode] = useState(false);
     const [randomStart, setRandomStart] = useState(false);
     const [isPopular, setIsPopular] = useState(true);
+    const [translateY, setTranslateY] = useState(0);
+    const [historyStyle, setHistoryStyle] = useState("absolute w-full flex flex-col duration-[3s] ease-out")
 
+    const [pageJustLoaded, setPageJustLoaded] = useState(true);
 
     let roomData = props.roomData;
     let socket = props.socket;
@@ -19,24 +22,42 @@ export function Game (props) {
 
     let gameData = roomData.game_data;
 
-
     
-    // useEffect(() => {
-    //     socket.on('timer_status', (timer) => {
-    //         console.log(2)
-    //         setCurrentTimer(<div className="absolute left-[200px] bottom-[200px]">
-    //                             <Timer duration={timer.duration} remaining={timer.remaining}/>
-    //                         </div>)
-    //         })
-    //     socket.on('room_update', (data) => {
-    //         console.log(3)
-    //         if (data.game_data && data.status === 'active' && data.timer) {
-    //             setCurrentTimer(<div className="absolute left-[200px] bottom-[200px]">
-    //                                 <Timer duration={data.timer.duration} remaining={data.timer.remaining}/>
-    //                             </div>)
-    //         }
-    //     })
-    // }, [socket])
+
+
+    useEffect(() => {
+        setTimeout(() => {
+            setPageJustLoaded(false);
+        }, 2000)
+    }, [])
+
+
+    useEffect(() => {
+        let history = document.getElementById('history');
+        if (history) {
+ 
+            let rect = history.getBoundingClientRect();
+            let bottom = rect.bottom;   
+            let targetY = window.innerHeight - 500;
+    
+            //console.log('target: ', targetY, 'bottom: ', bottom)
+            
+            if (bottom !== targetY) {
+                if (bottom > targetY && pageJustLoaded === false) {
+                    setHistoryStyle("absolute w-full flex flex-col duration-[2s] ease-out")
+                }
+                else {
+                    setHistoryStyle("absolute w-full flex flex-col")
+                }
+
+                let translate = (targetY - bottom)
+                // console.log(translateY)
+                // console.log(translate)
+                setTranslateY(translate + translateY)
+            }
+        }
+
+    }, [roomData])
 
 
     const startMatch = () => {
@@ -45,6 +66,7 @@ export function Game (props) {
     
 
     if (roomData.status !== 'active' && roomData.status !== 'finished') {
+        
 
         let buttonMsg = "Play Solo"
         let buttonStyle = "mt-2 mb-5 mx-auto w-40 min-h-10 bg-blue-600/80 shadow-md shadow-gray-400 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
@@ -144,19 +166,19 @@ export function Game (props) {
 
 
     if(gameData) {
-
-        let msg = ''
     
-        if (myTurn) {
-            msg = 'Your Turn!'
-        }
-        else {
-            msg = `${capitalizeFirstLetter(roomData.players[gameData.current_id].name)}'s Turn`
-        }
+        // let msg = ''
+    
+        // if (myTurn) {
+        //     msg = 'Your Turn!'
+        // }
+        // else {
+        //     msg = `${capitalizeFirstLetter(roomData.players[gameData.current_id].name)}'s Turn`
+        // }
     
         let hiddenStyle = ""
         if (roomData.status === 'finished') {
-          hiddenStyle = "opacity-10 duration-[4s] delay-[2s] ease-in place-items-center h-full"}
+          hiddenStyle = "opacity-10 duration-[3s] delay-[2s] ease-in place-items-center h-full"}
         else {
           hiddenStyle = "opacity-100 place-items-center h-full"
         }
@@ -166,22 +188,26 @@ export function Game (props) {
         let history = gameData.history
     
     
-        if (history) {
+        if (history && history.length > 0) {
 
             let img = <></>
-    
-            return (
+
+            if (history.length === 1 && roomData.status !== 'finished') {
+                img = <img key={history[0].image} src={history[0].image} className="absolute h-[260px] top-[460px] left-1/2 -translate-x-1/2 rounded-xl animate-fade-out-scale" style={{animationDelay: '5s'}}/>
+                             
+            }
+
+            return (    
     
                 <div className={hiddenStyle}>  
                 {/* <h1 className="text-6xl text-gray-50/100 tracking-loose font-semibold hover:cursor-pointer">
                     {msg}
                 </h1> */}
                 
-                <img key={history[0].image} src={history[0].image} className="absolute h-[260px] top-[460px] left-1/2 -translate-x-1/2 rounded-xl animate-fade-out-scale" style={{animationDelay: '5s'}}/>
-                             
+                {img}
     
                 <div className="relative mx-auto min-w-[600px] min-h-[600px] flex flex-col overflow-hidden">
-                    <div className="absolute bottom-0 w-full flex flex-col -translate-y-40 duration-[2s] ease-in">
+                    <div id='history' className={historyStyle} style={{transform: `translate(0, ${translateY}px)`}}>
                         {
                             history.map((guess, i) => {
     
@@ -191,25 +217,28 @@ export function Game (props) {
 
                                             <div key={i} className="relative mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-[rgb(216,213,235)] text-[rgb(15,15,11)] rounded-3xl">
                                                 <h1 className="text-3xl mb-4 italic z-20">{guess.title}</h1>
-    
-                                                {
-                                                    ['director', 'screenplay', 'cinematographer', 'composer', 'editor', 'cast'].map((title, i) => {
-                                                        if (guess[title]) {
-                                                            let val = guess[title];
-                                                            if (title ==='screenplay' || title ==='cast') {
-                                                                val = val.join(', ')
+                                                <div className="w-400px block mx-auto">
+                                                    {
+                                                        ['director', 'screenplay', 'cinematographer', 'composer', 'editor', 'cast'].map((title, i) => {
+                                                            if (guess[title]) {
+                                                                let val = guess[title].join(', ');
+
+                                                                if (title === 'cast') {
+                                                                    title = 'Notable Cast'
+                                                                }
+
+                                                                if (val) {
+                                                                    return (
+                                                                        <div key={`${i}A`} className="z-20">
+                                                                            <b>{capitalizeFirstLetter(title)}:</b> {val}
+                                                                        </div>
+                                                                    )
+                                                                }
                                                             }
-                                                            if (title === 'cast') {
-                                                                title = 'Notable Cast'
-                                                            }
-                                                            return (
-                                                                <div key={`${i}A`} className="z-20">
-                                                                    <b>{capitalizeFirstLetter(title)}:</b> {val}
-                                                                </div>
-                                                            )
-                                                        }
-                                                    })
-                                                }
+                                                        })
+                                                    }
+
+                                                </div>
 
                                             </div>
                                         </div>

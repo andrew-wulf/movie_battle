@@ -14,4 +14,15 @@
         transform: scale(0.95);
         }
     }
+
+    --animate-slide-up: slide-up 2s ease-out forwards;
+
+    @keyframes slide-up {
+        0% {
+        transform: translate(0, 200px);
+        }
+        100% {
+        transform: translate(0, -200px);
+        }
+    }
 }

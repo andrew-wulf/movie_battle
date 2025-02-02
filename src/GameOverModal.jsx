@@ -22,7 +22,7 @@ export function GameOverModal(props) {
 
       let hiddenStyle = ""
       if (props.show) {
-        hiddenStyle = "opacity-100 duration-[4s] delay-[1.8s] ease-in fixed w-[600px] h-[400px] bg-black/85 text-gray-300/85 rounded-2xl flex flex-col justify-between py-10 place-items-center text-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group"
+        hiddenStyle = "opacity-100 duration-[3s] delay-[1.8s] ease-in fixed w-[600px] h-[400px] bg-black/85 text-gray-300/85 rounded-2xl flex flex-col justify-between py-10 place-items-center text-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group"
       }
       else {
         hiddenStyle = "opacity-0 fixed w-[600px] h-[400px] bg-black/65 text-gray-300/85 rounded-2xl flex flex-col justify-between py-10 place-items-center text-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-20 group"
