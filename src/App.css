@@ -26,3 +26,22 @@
         }
     }
 }
+
+
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+    margin: auto
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1c4;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #a1a1a1;
+    width: 8px;
+  }
