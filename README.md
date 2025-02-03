@@ -1,5 +1,6 @@
 # Movie Battle
 
+Live multiplayer game heavily based on [Cine2nerdle's battle mode.](https://www.cinenerdle2.app/battle)
 This is a new project, a longer description coming soon!
 
 ## The Gist
