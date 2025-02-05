@@ -60,11 +60,14 @@ export function Content(props) {
           </p>
 
           <input className='w-48 h-10 rounded-2xl border border-gray-700 text-center  focus:border-sky-600 focus:outline focus:outline-sky-600' 
-          placeholder='Enter your nickname' value={nameInput} onChange={(e) => {setNameInput(e.target.value)}}>
+          placeholder='Enter your nickname' value={nameInput} onChange={(e) => {setNameInput(e.target.value)}} 
+          onKeyDown={(e) => {if (e.key === 'Enter') {createLobby()}}}>
           </input>
 
 
-          <button className='mt-4 mb-6 w-32 h-9 rounded-xl bg-[rgb(67,199,50)] shadow-sm shadow-gray-500 hover:cursor-pointer hover:bg-[rgb(47,179,30)]' onClick={createLobby}>
+          <button className='mt-4 mb-6 w-32 h-9 rounded-xl bg-[rgb(67,199,50)] shadow-sm shadow-gray-500 hover:cursor-pointer hover:bg-[rgb(47,179,30)]' 
+          onClick={createLobby}
+          >
             Create Room
           </button>
         </div>
@@ -80,11 +83,15 @@ export function Content(props) {
           </p>
 
           <input className='w-48 h-10 rounded-2xl border border-gray-700 text-center  focus:border-sky-600 focus:outline focus:outline-sky-600' 
-          placeholder='Enter room code' value={codeInput} onChange={(e) => {setCodeInput(e.target.value)}}>
+          placeholder='Enter room code' value={codeInput} onChange={(e) => {setCodeInput(e.target.value)}}
+          onKeyDown={(e) => {if (e.key === 'Enter') {joinLobby()}}}
+          >
           </input>
 
 
-          <button className='mt-4 mb-6 w-32 h-9 rounded-xl bg-[rgb(67,199,50)] shadow-sm shadow-gray-500 hover:cursor-pointer hover:bg-[rgb(47,179,30)]' onClick={joinLobby}>
+          <button className='mt-4 mb-6 w-32 h-9 rounded-xl bg-[rgb(67,199,50)] shadow-sm shadow-gray-500 hover:cursor-pointer hover:bg-[rgb(47,179,30)]' 
+          onClick={joinLobby}
+          >
             Connect
           </button>
         </div>

@@ -56,7 +56,12 @@ export function Input(props) {
 
     const submit = (arr) => {
         if (myTurn) {
-            socket.emit('input_submit', roomID, arr);
+            if (roomData.status === 'first_pick') {
+                socket.emit('first_pick', roomID, arr)
+            }
+            else {
+                socket.emit('input_submit', roomID, arr);
+            }
         }
         setSearchResults([]);
         setInputVal("")

@@ -24,7 +24,7 @@ export function Timer(props) {
 
   
 
-  if (remaining && roomData && roomData.status === 'active') {
+  if (remaining && roomData && (roomData.status === 'active' || roomData.status === 'first_pick')) {
     return (
       <div key={timerKey} className="absolute left-0 -top-28">
           <CountDownTimer duration={duration} remaining={remaining}/>

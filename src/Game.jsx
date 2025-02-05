@@ -9,7 +9,10 @@ export function Game (props) {
     const [banOption, setBanOption] = useState(false);
     const [hardMode, setHardMode] = useState(false);
     const [randomStart, setRandomStart] = useState(false);
-    const [isPopular, setIsPopular] = useState(true);
+    const [randomType, setRandomType] = useState('popular');
+    const [timerSetting, setTimerSetting] = useState(30);
+
+
     const [translateY, setTranslateY] = useState(0);
     const [historyStyle, setHistoryStyle] = useState("absolute w-full flex flex-col duration-[3s] ease-out")
 
@@ -60,12 +63,18 @@ export function Game (props) {
     }, [roomData])
 
 
+    const optionsUpdate = (key, value) => {
+        //console.log(roomID, key, value)
+        socket.emit('options_update', roomID, key, value)
+    }
+
+
     const startMatch = () => {
         socket.emit('start_match', roomID)
     }
     
 
-    if (roomData.status !== 'active' && roomData.status !== 'finished') {
+    if (roomData.status !== 'active' && roomData.status !== 'finished' && roomData.status !== 'first_pick') {
         
 
         let buttonMsg = "Play Solo"
@@ -90,21 +99,39 @@ export function Game (props) {
                 <h1 className=" text-2xl font-semibold mt-4">
                     Options
                 </h1>
-
-                <p className="font-semibold text-black/95">These don't do anything yet, coming soon!</p>
+                
+                <label className="inline-flex items-center cursor-pointer gap-4">
+                    <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Timer Duration</span>
+                    <div className="w-18 relative">
+                        <select
+                            onChange={(e) => {optionsUpdate('timer', e.target.value)}}
+                            value={roomData.options.timer}
+                            disabled={Object.keys(roomData.players)[0] === myID ? false : true}
+                            className="w-full bg-gray-100 placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow cursor-pointer appearance-none">
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="60">60</option>
+                        </select>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.2" stroke="currentColor" className="h-5 w-5 ml-1 absolute top-2.5 right-2.5 text-slate-700">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                        </svg>
+                    </div>
+                </label>
 
                 <div className="flex flex-col gap-4 ">
+
                     <label className="inline-flex items-center cursor-pointer">
                         <input type="checkbox" value="" className="sr-only peer"
-                            checked={lifelines}
-                            onChange={() => {setLifelines(!lifelines)}}
+                            checked={roomData.options.lifelines}
+                            onChange={() => {optionsUpdate('lifelines', !roomData.options.lifelines)}}
                             disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                         />
                         <div className="relative w-11 h-6 bg-[rgb(194,191,204)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
                         <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Lifelines</span>
                     </label>
 
-                    <label className="inline-flex items-center cursor-pointer">
+                    {/* <label className="inline-flex items-center cursor-pointer">
                         <input type="checkbox" value="" className="sr-only peer"
                             checked={banOption}
                             onChange={() => {setBanOption(!banOption)}}
@@ -122,12 +149,12 @@ export function Game (props) {
                         />
                         <div className="relative w-11 h-6 bg-[rgb(189,185,206)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
                         <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Hard Mode</span>
-                    </label>
+                    </label> */}
 
                     <label className="inline-flex items-center cursor-pointer">
                         <input type="checkbox" value="" className="sr-only peer"
-                            checked={randomStart}
-                            onChange={() => {setRandomStart(!randomStart)}}
+                            checked={roomData.options.random_start}
+                            onChange={() => {optionsUpdate('random_start', !roomData.options.random_start)}}
                             disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                         />
                         <div className="relative w-11 h-6 bg-[rgb(189,185,206)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
@@ -135,19 +162,21 @@ export function Game (props) {
                     </label>
                 </div>
 
-                <div className={randomStart === true ? "block" : "hidden"}>
+                <div className={roomData.options.random_start === true ? "block" : "hidden"}>
                     <p className="mt-4 mb-2 text-center text-xl font-semibold tracking-tight">Starting Movie</p>
                     <div className="inline-flex mb-2 w-80">
-                        <div className={isPopular === true ? "bg-gray-400" : "bg-gray-300"}>
+                        <div className={roomData.options.random_type === 'popular' ? "bg-gray-400" : "bg-gray-300"}>
                             <button className=" hover:shadow-md shadow:blue-700 text-gray-800 font-bold py-2 px-4 rounded-l hover:cursor-pointer"
-                                onClick={() => {setIsPopular(true)}}
+                                onClick={() => {optionsUpdate('random_type', 'popular')}}
+                                disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                             >
                                 Random Popular
                             </button> 
                         </div>
-                        <div className={isPopular === true ? "bg-gray-300" : "bg-gray-400"}>
+                        <div className={roomData.options.random_type === 'top_rated' ? "bg-gray-400" : "bg-gray-300"}>
                             <button className=" hover:shadow-md shadow:blue-700 text-gray-800 font-bold py-2 px-4 rounded-r hover:cursor-pointer"
-                                onClick={() => {setIsPopular(false)}}
+                                onClick={() => {optionsUpdate('random_type', 'top_rated')}}
+                                disabled={Object.keys(roomData.players)[0] === myID ? false : true}
                             >
                                 Random Top Rated
                             </button>
@@ -161,6 +190,20 @@ export function Game (props) {
                     {buttonMsg}
                 </button>
             </div>
+        )
+    }
+
+    if (roomData.status === 'first_pick') {
+        return (
+            <>
+            <div className="relative mx-auto min-w-[600px] min-h-[600px] flex flex-col overflow-hidden">
+                <h1 className="text-gray-200 text-4xl font-semibold mx-auto mt-80">{gameData.current_name.name} is picking the first movie.</h1>
+            </div>
+                <div className="w-[700px] mt-[280px] relative flex justify-center items-center">
+                    <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
+                    <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>
+                </div>
+            </>
         )
     }
 
@@ -188,7 +231,7 @@ export function Game (props) {
         let history = gameData.history
     
     
-        if (history && history.length > 0) {
+        if (history && history.length > 0 && roomData.status !== 'first_pick') {
 
             let img = <></>
 
@@ -257,11 +300,7 @@ export function Game (props) {
                                         return (
                                             <div key={i} className="flex flex-col place-items-center">
                                                 <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                <div key={i} className="mx-auto w-[420px] p-4 flex flex-col place-items-center bg-[rgb(228,189,157)] text-[rgb(15,15,11)] rounded-3xl">
-                                                    <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
-                                                </div>
                                                 <>
-                                                <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
                                                 <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
                                                     <p className="text-lg font-light">{capitalizeFirstLetter(role)}</p>
                                                     <p className="text-2xl">{guess.name}</p>
@@ -284,13 +323,17 @@ export function Game (props) {
                                                                 )
                                                             }
                                                         })
-                
+                                                        
                                                     }   
                                                         
                                                     </div>
-                                                </div>
-                                            
+                                                </div>    
                                                 </>
+
+                                                <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                <div key={i} className="mx-auto w-[420px] p-4 flex flex-col place-items-center bg-[rgb(228,189,157)] text-[rgb(15,15,11)] rounded-3xl">
+                                                    <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
+                                                </div>
                                             </div>
                                         )
                                     }
@@ -339,8 +382,9 @@ export function Game (props) {
             </div>
             )
         }
+
     }
-    
+
 
 }
 

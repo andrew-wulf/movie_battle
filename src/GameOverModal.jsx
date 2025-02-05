@@ -44,7 +44,7 @@ export function GameOverModal(props) {
       let history = roomData.game_data.history
 
       if (history) {
-        roundcount = history.length - 1
+        roundcount = Math.max(history.length - 1, 0)
       }
 
       return (
