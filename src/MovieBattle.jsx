@@ -85,7 +85,7 @@ export function MovieBattle() {
       <div className="bg-auto absolute inset-0 -z-10 mix-blend-overlay bg-[rgb(61,62,87)]">
       </div>
 
-      <button className='z-30 absolute top-10 right-40 w-32 h-12 bg-black/50 text-gray-300 rounded-xl hover:cursor-pointer hover:bg-black/70 hover:shadow hover:shadow-blue-600 text-lg font-semibold'
+      <button className='z-30 absolute top-3 lg:top-5 right-3 lg:right-10 w-32 h-12 bg-black/50 text-gray-300 rounded-xl hover:cursor-pointer hover:bg-black/70 hover:shadow hover:shadow-blue-600 text-lg font-semibold'
       onClick={() => {setModalVisible(true)}}
       >
         How to Play

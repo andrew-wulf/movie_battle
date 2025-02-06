@@ -116,10 +116,10 @@ export function Room (props) {
         msgStyle = "absolute flex flex-col place-items-center right-10 bottom-32 w-96 h-[140px] overflow-hidden bg-black/65 text-gray-500 rounded-xl duration-800"
     }
 
-    let playerStyle = "absolute flex flex-col place-items-center left-10 top-32 w-64 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
+    let playerStyle = "absolute flex flex-col place-items-center left-6 bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
 
     if (!playerCollapse) {
-        playerStyle = "absolute flex flex-col place-items-center left-10 top-32 w-64 h-18 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
+        playerStyle = "absolute flex flex-col place-items-center left-6 bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 h-18 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
     }
  
     
@@ -173,62 +173,65 @@ export function Room (props) {
                             })
                         }
                     </div>
-
-                    <div className={msgStyle}>
-                        <div className="px-12 pb-1 w-full flex flex-row place-items-center justify-between">
-                            <h1 className="mx-auto text-2xl pt-4 text-gray-300 w-full text-center">Chat</h1>
-                            <button className="mt-4 ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
-                                onClick={() => {setMsgCollapse(!msgCollapse)}}
-                            >
-                                <MdOutlineKeyboardArrowDown className="w-6 h-6"/>
-                            </button>
-                        </div>
-                        
-                        <div className="relative w-full h-full overflow-hidden">
-                            <div className="absolute w-full bottom-0 duration-600">
-                                {
-                                    roomData.messages.map((msg, i) => {
-                                    
-                                        return (
-                                            <div key={i} className="p-3 pl-10 text-wrap w-80 border-gray-700/15">
-                                                <div>
-                                                    <h1 className="text-[rgb(136,148,226)]">
-                                                        {roomData.players[msg[0]].name}
-                                                    </h1>
-                                                    <p className="text-lg font-semibold text-sky-600">
-                                                        {msg[1]}
-                                                    </p>
+                    
+                    <div className="hidden xl:block">
+                        <div className={msgStyle}>
+                            <div className="px-12 pb-1 w-full flex flex-row place-items-center justify-between">
+                                <h1 className="mx-auto text-2xl pt-4 text-gray-300 w-full text-center">Chat</h1>
+                                <button className="mt-4 ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
+                                    onClick={() => {setMsgCollapse(!msgCollapse)}}
+                                >
+                                    <MdOutlineKeyboardArrowDown className="w-6 h-6"/>
+                                </button>
+                            </div>
+                            
+                            <div className="relative w-full h-full overflow-hidden">
+                                <div className="absolute w-full bottom-0 duration-600">
+                                    {
+                                        roomData.messages.map((msg, i) => {
+                                        
+                                            return (
+                                                <div key={i} className="p-3 pl-10 text-wrap w-80 border-gray-700/15">
+                                                    <div>
+                                                        <h1 className="text-[rgb(136,148,226)]">
+                                                            {roomData.players[msg[0]].name}
+                                                        </h1>
+                                                        <p className="text-lg font-semibold text-sky-600">
+                                                            {msg[1]}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )
-                                    })
-                                }
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                                    
+                            <div className="flex flex-row items-center justify-between w-full px-10 pb-4 pt-4">
+                                <input className="mx-auto w-60 h-10 focus:bg-gray-600/10 text-sky-600 border border-gray-700/50 rounded-xl text-center"
+                                    placeholder="type here to chat."
+                                    value={msgInput}
+                                    onChange={(e) => {
+                                        let msg = e.target.value;
+                                        if (msg.length > 0 && msg.length < 200) {
+                                            setMsgInput(e.target.value)
+                                        }
+                                    }}
+                                    onKeyDown={(e) => {if (e.key === 'Enter') {postMsg()}}}
+                                >
+                                </input>
+                                <button className="ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
+                                    onClick={postMsg}
+                                >
+                                    <IoIosSend className="w-6 h-6"/>
+                                </button>
                             </div>
                         </div>
-                                
-                        <div className="flex flex-row items-center justify-between w-full px-10 pb-4 pt-4">
-                            <input className="mx-auto w-60 h-10 focus:bg-gray-600/10 text-sky-600 border border-gray-700/50 rounded-xl text-center"
-                                placeholder="type here to chat."
-                                value={msgInput}
-                                onChange={(e) => {
-                                    let msg = e.target.value;
-                                    if (msg.length > 0 && msg.length < 200) {
-                                        setMsgInput(e.target.value)
-                                    }
-                                }}
-                                onKeyDown={(e) => {if (e.key === 'Enter') {postMsg()}}}
-                            >
-                            </input>
-                            <button className="ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
-                                onClick={postMsg}
-                            >
-                                <IoIosSend className="w-6 h-6"/>
-                            </button>
-                        </div>
+
                     </div>
 
 
-                    <div className='fixed top-10 left-25 flex flex-row gap-2 hover:cursor-pointer hover:text-gray-200 text-gray-400 place-items-center' 
+                    <div className='fixed top-6 left-6 lg:top-10 lg:left-25 flex flex-row gap-2 hover:cursor-pointer hover:text-gray-200 text-gray-400 place-items-center' 
                         onClick={() => {navigator.clipboard.writeText(url); alert('copied invite link to clipboard.')}}
                         >
                         <FaRegCopy/>

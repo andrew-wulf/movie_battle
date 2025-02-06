@@ -247,7 +247,7 @@ export function Game (props) {
                     {msg}
                 </h1> */}
                 
-                {img}
+                {/* {img} */}
     
                 <div className="relative mx-auto min-w-[600px] min-h-[600px] flex flex-col overflow-hidden">
                     <div id='history' className={historyStyle} style={{transform: `translate(0, ${translateY}px)`}}>
@@ -256,15 +256,23 @@ export function Game (props) {
     
                                 if (i === 0) {
                                     return (
-                                        <div key={i} className="relative pt-[200px] flex flex-col">
-
-                                            <div key={i} className="relative mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-[rgb(216,213,235)] text-[rgb(15,15,11)] rounded-3xl">
-                                                <h1 className="text-3xl mb-4 italic z-20">{guess.title}</h1>
-                                                <div className="w-400px block mx-auto">
+                                        <div key={i} className="">
+                                                                                        
+                                            <div className="relative mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-black/85 text-gray-300 rounded-3xl">
+                                                <div key={i} className="mx-auto w-full p-4 flex flex-row gap-8 place-items-center  rounded-3xl">
+                                                    <img src={guess.image} className="w-14 rounded-2xl"/>
+                                                    <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
+                                                </div>
+    
+                                                <div className="w-[400px] mx-auto text-md grid grid-cols-2 gap-2">
                                                     {
-                                                        ['director', 'screenplay', 'cinematographer', 'composer', 'editor', 'cast'].map((title, i) => {
+                                                        ['director', 'screenplay', 'cinematographer', 'composer'].map((title, i) => {
                                                             if (guess[title]) {
-                                                                let val = guess[title].join(', ');
+
+
+  
+                                                                let val = guess[title].slice(0, 2).join(', ')
+                                                                
 
                                                                 if (title === 'cast') {
                                                                     title = 'Notable Cast'
@@ -272,15 +280,19 @@ export function Game (props) {
 
                                                                 if (val) {
                                                                     return (
-                                                                        <div key={`${i}A`} className="z-20">
-                                                                            <b>{capitalizeFirstLetter(title)}:</b> {val}
+                                                                        <div key={`${i}A`} className="z-20 flex flex-col">
+                                                                            <h1 className="text-gray-400 text-sm">{capitalizeFirstLetter(title)}</h1>
+                                                                            <p className="text-gray-100">{val}</p>
                                                                         </div>
                                                                     )
                                                                 }
                                                             }
                                                         })
                                                     }
-
+                                                </div>
+                                                <div className="mt-4 flex flex-col place-items-center">
+                                                    <h1 className="w-60 text-sm text-gray-400 text-center">Notable Cast</h1>
+                                                    <p className="text-center w-3/4 text-gray-100">{guess['cast'].join(', ')}</p>
                                                 </div>
 
                                             </div>
@@ -331,42 +343,59 @@ export function Game (props) {
                                                 </>
 
                                                 <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                <div key={i} className="mx-auto w-[420px] p-4 flex flex-col place-items-center bg-[rgb(228,189,157)] text-[rgb(15,15,11)] rounded-3xl">
+                                                <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                    <img src={guess.image} className="w-14 rounded-2xl"/>
                                                     <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
                                                 </div>
                                             </div>
                                         )
                                     }
                                     else {
-                                        let content = <></>;
-                                        if (guess.success === 'taken') {
-                                            content =   <>
-                                                            <h1 className="text-3xl line-through text-center italic">{guess.title}</h1>
-                                                            <p className="text-3xl mb-2">Already Used!</p>
-                                                        </>
-                                        }
                                         if (guess.success === 'expired') {
-                                            content =   <>
-                                                            <h1 className="text-3xl">Out of Time!</h1>
-                                                        </>
+                                            return (
+                                                <div key={i} className="place-items-center">
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <div className="mx-auto w-[240px] py-2 px-4 flex flex-row place-items-center gap-4 bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                        <div className="text-4xl text-[rgb(128,36,36)]">
+                                                             &#x2715;
+                                                        </div>
+                                                        <p>Out of time!</p>                                   
+                                                    </div>
+
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                        <img src={guess.image} className="w-14 rounded-2xl"/>
+                                                        <h1 className="text-3xl mb-4 italic text-center">{history[i - 1].title}</h1>
+                                                    </div>
+                                                </div>
+                                            )
                                         }
                                         else {
-                                            content =   <>
-                                                            <h1 className="text-3xl line-through text-center italic">{guess.title}</h1>
-                                                        </>
-                                        }
-                                        return (
-                                            <div key={i} className="place-items-center">
-                                                <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                <div className="mx-auto w-[500px] p-4 flex flex-col place-items-center bg-[rgb(224,104,104)] text-[rgb(15,15,11)] rounded-3xl">
-                                                    {content}
-                                                    <h1 className="text-2xl text-center font-semibold">Current movie: <b className="italic font-bold tracking-tight">{history[i - 1].title}</b> </h1>
-                                                    {/* <div key={i} className="text-4xl text-[rgb(70,20,20)]">
-                                                        &#x2715;
-                                                    </div> */}
+                                            let content = <></>;
+                                            let msg = 'No links';
+                                            if (guess.success === 'taken') {
+                                                msg = 'Taken!'
+                                            }
+
+                                            return (
+                                                <div key={i} className="place-items-center">
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                        {msg}
+                                                    </div>
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                        <img src={guess.image} className="w-14 rounded-2xl"/>
+                                                        <div className="flex flex-col">
+                                                            <h1 className="text-2xl line-through text-center italic">{guess.title}</h1>
+                                                            <h1 className="text-xl text-center font-semibold">Current movie: <b className="italic font-bold tracking-tight">{history[i - 1].title}</b> </h1>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )
+    
+                                            )
+                                        }
+
                                     }
                                 }
                             })

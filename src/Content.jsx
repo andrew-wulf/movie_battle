@@ -99,7 +99,7 @@ export function Content(props) {
 
         <p 
         
-        className='absolute bottom-[60px] text-xl text-gray-300'
+        className='absolute bottom-[30px] sm:bottom-[60px] text-md sm:text-xl text-gray-300'
         >
           This game is made possible by the API provided by <a className="text-sky-500 hover:text-sky-400" href={"https://developer.themoviedb.org/docs/getting-started"} target="_blank" >themoviedb.org!</a>
         </p>
