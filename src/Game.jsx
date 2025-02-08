@@ -254,7 +254,7 @@ export function Game (props) {
                         {
                             history.map((guess, i) => {
     
-                                if (i === 0) {
+                                if (i === 0 ) {
                                     return (
                                         <div key={i} className="">
                                                                                         
@@ -303,52 +303,134 @@ export function Game (props) {
                                 else {
     
                                     if (guess.success === 'success') {
-                                        
-                                        let role = `${guess.second_role}, ${guess.first_role}`
-                                        if (['director', 'screenplay', 'cinematographer', 'composer', 'editor'].includes(guess.second_role)) {
-                                            role = guess.second_role
-                                        }
-    
-                                        return (
-                                            <div key={i} className="flex flex-col place-items-center">
-                                                <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                <>
-                                                <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                    <p className="text-lg font-light">{capitalizeFirstLetter(role)}</p>
-                                                    <p className="text-2xl">{guess.name}</p>
-                                                    <div className="flex flex-row gap-2 font-bold text-xl">
-                                                        
-                                                    {
-                                                        guess.link_usage.map((bool, i) => {
-                                                            if (bool) {
-                                                                return (
-                                                                    <div key={i} className="text-[rgb(70,20,20)]">
-                                                                        &#x2715;
-                                                                    </div>
-                                                                )
-                                                            }
-                                                            else {
-                                                                return (
-                                                                    <div key={i} className="text-gray-800/60">
-                                                                        &#x2715;
-                                                                    </div>
-                                                                )
-                                                            }
-                                                        })
-                                                        
-                                                    }   
-                                                        
-                                                    </div>
-                                                </div>    
-                                                </>
 
-                                                <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
-                                                    <img src={guess.image} className="w-14 rounded-2xl"/>
-                                                    <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
+                                        let role = `${guess.second_role}, ${guess.first_role}`
+
+                                        if (guess.show_info) {
+
+                                            return (
+                                                <div key={i} className="flex flex-col place-items-center">
+
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <>
+                                                    <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                        <p className="text-lg font-light">{capitalizeFirstLetter(role)}</p>
+                                                        <p className="text-2xl">{guess.name}</p>
+                                                        <div className="flex flex-row gap-2 font-bold text-xl">
+                                                            
+                                                        {
+                                                            guess.link_usage.map((bool, i) => {
+                                                                if (bool) {
+                                                                    return (
+                                                                        <div key={i} className="text-[rgb(70,20,20)]">
+                                                                            &#x2715;
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                else {
+                                                                    return (
+                                                                        <div key={i} className="text-gray-800/60">
+                                                                            &#x2715;
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            })
+                                                            
+                                                        }   
+                                                            
+                                                        </div>
+                                                    </div>    
+                                                    </>
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <div className="relative mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-black/85 text-gray-300 rounded-3xl">
+                                                        <div key={i} className="mx-auto w-full p-4 flex flex-row gap-8 place-items-center  rounded-3xl">
+                                                            <img src={guess.image} className="w-14 rounded-2xl"/>
+                                                            <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
+                                                        </div>
+            
+                                                        <div className="w-[400px] mx-auto text-md grid grid-cols-2 gap-2">
+                                                            {
+                                                                ['director', 'screenplay', 'cinematographer', 'composer'].map((title, i) => {
+                                                                    if (guess[title]) {
+
+
+                                                                        let val = guess[title].slice(0, 2).join(', ')
+                                                                        
+
+                                                                        if (title === 'cast') {
+                                                                            title = 'Notable Cast'
+                                                                        }
+
+                                                                        if (val) {
+                                                                            return (
+                                                                                <div key={`${i}A`} className="z-20 flex flex-col">
+                                                                                    <h1 className="text-gray-400 text-sm">{capitalizeFirstLetter(title)}</h1>
+                                                                                    <p className="text-gray-100">{val}</p>
+                                                                                </div>
+                                                                            )
+                                                                        }
+                                                                    }
+                                                                })
+                                                            }
+                                                        </div>
+                                                        <div className="mt-4 flex flex-col place-items-center">
+                                                            <h1 className="w-60 text-sm text-gray-400 text-center">Notable Cast</h1>
+                                                            <p className="text-center w-3/4 text-gray-100">{guess['cast'].join(', ')}</p>
+                                                        </div>
+
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )
+                                            )
+                                        }
+
+                                        else {           
+                                            if (['director', 'screenplay', 'cinematographer', 'composer', 'editor'].includes(guess.second_role)) {
+                                                role = guess.second_role
+                                            }
+        
+                                            return (
+                                                <div key={i} className="flex flex-col place-items-center">
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <>
+                                                    <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                        <p className="text-lg font-light">{capitalizeFirstLetter(role)}</p>
+                                                        <p className="text-2xl">{guess.name}</p>
+                                                        <div className="flex flex-row gap-2 font-bold text-xl">
+                                                            
+                                                        {
+                                                            guess.link_usage.map((bool, i) => {
+                                                                if (bool) {
+                                                                    return (
+                                                                        <div key={i} className="text-[rgb(70,20,20)]">
+                                                                            &#x2715;
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                else {
+                                                                    return (
+                                                                        <div key={i} className="text-gray-800/60">
+                                                                            &#x2715;
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            })
+                                                            
+                                                        }   
+                                                            
+                                                        </div>
+                                                    </div>    
+                                                    </>
+    
+                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                    <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                        <img src={guess.image} className="w-14 rounded-2xl"/>
+                                                        <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
+                                                    </div>
+                                                </div>
+                                            )
+
+                                        }
+                                        
                                     }
                                     else {
                                         if (guess.success === 'expired') {
