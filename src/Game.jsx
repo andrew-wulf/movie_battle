@@ -41,7 +41,7 @@ export function Game (props) {
  
             let rect = history.getBoundingClientRect();
             let bottom = rect.bottom;   
-            let targetY = window.innerHeight - 500;
+            let targetY = window.innerHeight - (window.innerHeight * 0.55);
     
             //console.log('target: ', targetY, 'bottom: ', bottom)
             

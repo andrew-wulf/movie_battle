@@ -213,7 +213,7 @@ export function Room (props) {
                                     value={msgInput}
                                     onChange={(e) => {
                                         let msg = e.target.value;
-                                        if (msg.length > 0 && msg.length < 200) {
+                                        if (msg.length > -1 && msg.length < 200) {
                                             setMsgInput(e.target.value)
                                         }
                                     }}
