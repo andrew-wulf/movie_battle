@@ -116,7 +116,7 @@ export function Room (props) {
         msgStyle = "absolute flex flex-col place-items-center right-10 bottom-32 w-96 h-[140px] overflow-hidden bg-black/65 text-gray-500 rounded-xl duration-800"
     }
 
-    let playerStyle = "absolute flex flex-row lg:flex-col w-full lg:w-auto place-items-center left-0 lg:left-6 bottom-0 lg:bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
+    let playerStyle = "absolute flex flex-row flex-grow lg:flex-col w-full lg:w-auto place-items-center left-0 lg:left-6 bottom-0 lg:bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
 
     if (!playerCollapse) {
         playerStyle = "absolute flex flex-row lg:flex-col w-full lg:w-auto place-items-center left-0 lg:left-6 bottom-0 lg:bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 h-18 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
@@ -129,6 +129,14 @@ export function Room (props) {
             
             return (
                 <div className="w-full h-full relative flex flex-col place-items-center overflow-hidden">
+
+                    <button className='z-30 absolute top-3 lg:top-5 right-3 lg:right-10 w-32 h-12 bg-black/50 text-gray-300 rounded-xl hover:cursor-pointer hover:bg-black/70 hover:shadow hover:shadow-blue-600 text-lg font-semibold'
+                        onClick={() => {props.setModalVisible(true)}}
+                        hidden={window.innerWidth < 700 && !['pre-game', 'finished'].includes(roomData.status)}
+                        >
+                        How to Play
+                    </button>
+
                     <div className={playerStyle}>
 
                         <div className="hidden lg:flex pr-12 pb-1 w-full flex-row place-items-center justify-between">
@@ -143,29 +151,34 @@ export function Room (props) {
                             Object.keys(roomData.players).map(id => {
 
                                 let statusStyle = "hidden font-semibold text-green-700";
+                                let nameStyle = "font-semibold text-gray-500";
+
                                 if (roomData.players[id].ready && roomData.status !== "active") {
                                     statusStyle = "font-semibold text-green-700"
+                                    nameStyle = "font-semibold text-sky-300"
                                 }
 
-                                let nameStyle = "font-semibold text-gray-500"
-                                if (roomData.game_data && id === roomData.game_data.current_id) {
-                                    nameStyle = "font-semibold text-green-300"
-                                }
+                                if (roomData.status === 'active' || roomData.status === 'first_pick') {
 
-                                else {
-                                    if (roomData.players[id].active === false) {
-                                        nameStyle = "font-semibold text-gray-600/80 line-through"
+                                    if (id === roomData.game_data.current_id) {
+                                        nameStyle = "font-semibold text-green-300"
+                                    }
+                                    else {
+                                        if (roomData.players[id].active === false) {
+                                            nameStyle = "font-semibold text-gray-600/80 line-through"
+                                        }
+                                        else {
+                                            nameStyle = "font-semibold text-gray-300/90"
+                                        }
                                     }
                                 }
+                                    
+
                             
                                 return (
-                                    <div key={id} className="p-3 lg:pl-10 w-1/8 lg:w-full text-lg sm:text-xl md:text-2xl lg:text-3xl border-r lg:border-b border-gray-700/15 lg:flex flex-row gap-10 place-items-center">
+                                    <div key={id} className="p-3 lg:pl-10 lg:w-full text-md sm:text-xl md:text-2xl lg:text-3xl border-r lg:border-b border-gray-700/15 lg:flex flex-row gap-10 place-items-center">
                                         <p className={nameStyle}>
                                             {(roomData.players[id].name)}
-                                        </p>
-
-                                        <p className={statusStyle}>
-                                            ready!
                                         </p>
                                     </div>
                                 )
@@ -233,6 +246,7 @@ export function Room (props) {
 
                     <div className='fixed top-6 left-6 lg:top-10 lg:left-25 flex flex-row gap-2 hover:cursor-pointer hover:text-gray-200 text-gray-400 place-items-center' 
                         onClick={() => {navigator.clipboard.writeText(url); alert('copied invite link to clipboard.')}}
+                        hidden={window.innerWidth < 700 && !['pre-game', 'finished'].includes(roomData.status)}
                         >
                         <FaRegCopy/>
                         <h1 className="text-xl font-semibold tracking-tight">invite link</h1>

@@ -42,7 +42,7 @@ export function Content(props) {
 
     return (
       <>
-        <Room socket={socket} connected={connected}/>
+        <Room socket={socket} connected={connected} setModalVisible={props.setModalVisible}/>
       </>
     )
   }
@@ -60,7 +60,11 @@ export function Content(props) {
           </p>
 
           <input className='w-48 h-10 rounded-2xl border border-gray-700 text-center  focus:border-sky-600 focus:outline focus:outline-sky-600' 
-          placeholder='Enter your nickname' value={nameInput} onChange={(e) => {setNameInput(e.target.value)}} 
+          placeholder='Enter your nickname' value={nameInput} onChange={(e) => {
+            if (e.target.value.length < 10) {
+              setNameInput(e.target.value)
+            }
+          }} 
           onKeyDown={(e) => {if (e.key === 'Enter') {createLobby()}}}>
           </input>
 
@@ -98,7 +102,7 @@ export function Content(props) {
 
 
         <p 
-        className='absolute bottom-[30px] text-center text-md text-gray-300'
+        className='absolute text-center text-md text-gray-300 top-[calc(max(100vh-60px,680px))]'
         >
           This game is made possible by the API provided by <a className="text-sky-500 hover:text-sky-400" href={"https://developer.themoviedb.org/docs/getting-started"} target="_blank" >themoviedb.org!</a>
         </p>

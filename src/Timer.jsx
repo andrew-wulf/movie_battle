@@ -54,6 +54,12 @@ const renderTime = ({ remainingTime }) => {
 export function CountDownTimer(props) {
   let duration = props.duration;
   let remaining = props.remaining;
+
+  let width = window.innerWidth;
+  let size = 70;
+  if (width >= 1024) {
+    size = 80
+  }
   
   return (
     <CountdownCircleTimer
@@ -62,7 +68,7 @@ export function CountDownTimer(props) {
     initialRemainingTime={remaining}
     colors={["#155dfc", "#F7B801", "#A30000", "#A30000"]}
     colorsTime={[duration, duration * 2 / 3, duration/3, 0]}
-    size={80}
+    size={size}
     strokeWidth={8}
 
     onComplete={() => {props.timeout}}

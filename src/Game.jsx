@@ -199,7 +199,7 @@ export function Game (props) {
             <div className="relative mx-auto lg:min-w-[600px] lg:min-h-[600px] flex flex-col overflow-hidden">
                 <h1 className="text-gray-200 text-4xl font-semibold mx-auto mt-80 text-center">{gameData.current_name.name} is picking the first movie.</h1>
             </div>
-                <div className="absolute w-[400px] sm:w-[700px] h-[200px] bottom-10 left-1/2 -translate-x-1/2">
+                <div className="absolute w-full p-2 sm:w-[700px] h-[200px] bottom-10 left-1/2 -translate-x-1/2">
                     <div className="relative w-full h-full flex justify-between place-items-center">
                         <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
                         <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>
@@ -488,7 +488,7 @@ export function Game (props) {
                     </div>
                 </div>
                 
-                <div className="absolute w-[400px] sm:w-[700px] h-[200px] bottom-10 left-1/2 -translate-x-1/2">
+                <div className="absolute w-full px-1 sm:w-[700px] h-[200px] bottom-10 left-1/2 -translate-x-1/2">
                     <div className="relative w-full h-full flex justify-between place-items-center">
                         <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
                         <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>

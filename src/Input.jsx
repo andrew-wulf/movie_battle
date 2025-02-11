@@ -81,17 +81,20 @@ export function Input(props) {
                 <div className="w-[220px] sm:w-[500px] h-12 absolute left-1/2 -translate-x-1/2">
 
                     <div className="relative w-full h-full">
-                        <div className="z-0 absolute bottom-10 flex flex-col gap-2 w-[500px] text-black bg-[rgb(208,208,228)] text-lg rounded-t-xl overflow-hidden">
+                        <div className="z-0 absolute bottom-10 flex flex-col gap-2 w-[220px] sm:w-[500px] text-black bg-[rgb(208,208,228)] text-lg rounded-t-xl overflow-hidden">
                             {
                                 searchResults.map((obj, i) => {
-                                    return (
-                                        <p className="w-full hover:cursor-pointer hover:bg-sky-100" 
-                                            key={i}
-                                            onClick={() => {submit(obj)}}
-                                            >
-                                            {`${obj.title} (${obj.release_date.substring(0,4)})`}
-                                        </p>
-                                    )
+
+                                    if (i < 8 || window.innerWidth >= 640) {
+                                        return (
+                                            <p className="w-full hover:cursor-pointer hover:bg-sky-100" 
+                                                key={i}
+                                                onClick={() => {submit(obj)}}
+                                                >
+                                                {`${obj.title} (${obj.release_date.substring(0,4)})`}
+                                            </p>
+                                        )
+                                    }
                                 })
                             }
                         </div>
@@ -105,7 +108,7 @@ export function Input(props) {
                         >
                         </input>
         
-                        <div className=" mt-4 flex flex-row gap-5 w-500px justify-end"
+                        <div className=" mt-4 flex flex-row gap-5 w-500px justify-center lg:justify-end"
                         hidden={!myTurn}
                         >
                             <button className="text-yellow-300/80 hover:text-yellow-300 disabled:opacity-40 disabled:hover:text-yellow-300/80 hover:cursor-pointer disabled:hover:cursor-default" 
