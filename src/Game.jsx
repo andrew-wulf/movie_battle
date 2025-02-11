@@ -42,7 +42,9 @@ export function Game (props) {
             let rect = history.getBoundingClientRect();
             let bottom = rect.bottom;   
             let targetY = 450;
-    
+            if (window.innerHeight < 700) {
+                targetY = 380
+            }
             //console.log('target: ', targetY, 'bottom: ', bottom)
             
             if (bottom !== targetY) {
