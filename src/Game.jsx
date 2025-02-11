@@ -41,7 +41,7 @@ export function Game (props) {
  
             let rect = history.getBoundingClientRect();
             let bottom = rect.bottom;   
-            let targetY = window.innerHeight - (window.innerHeight * 0.55);
+            let targetY = 450;
     
             //console.log('target: ', targetY, 'bottom: ', bottom)
             
@@ -196,12 +196,14 @@ export function Game (props) {
     if (roomData.status === 'first_pick') {
         return (
             <>
-            <div className="relative mx-auto min-w-[600px] min-h-[600px] flex flex-col overflow-hidden">
-                <h1 className="text-gray-200 text-4xl font-semibold mx-auto mt-80">{gameData.current_name.name} is picking the first movie.</h1>
+            <div className="relative mx-auto lg:min-w-[600px] lg:min-h-[600px] flex flex-col overflow-hidden">
+                <h1 className="text-gray-200 text-4xl font-semibold mx-auto mt-80 text-center">{gameData.current_name.name} is picking the first movie.</h1>
             </div>
-                <div className="w-[700px] mt-[280px] relative flex justify-center items-center">
-                    <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
-                    <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>
+                <div className="absolute w-[400px] sm:w-[700px] h-[200px] bottom-10 left-1/2 -translate-x-1/2">
+                    <div className="relative w-full h-full flex justify-between place-items-center">
+                        <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
+                        <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>
+                    </div>
                 </div>
             </>
         )
@@ -249,7 +251,7 @@ export function Game (props) {
                 
                 {/* {img} */}
     
-                <div className="relative mx-auto min-w-[600px] min-h-[600px] flex flex-col overflow-hidden">
+                <div className="relative mx-auto w-[380px] sm:w-[600px] min-h-[600px] flex flex-col overflow-hidden">
                     <div id='history' className={historyStyle} style={{transform: `translate(0, ${translateY}px)`}}>
                         {
                             history.map((guess, i) => {
@@ -258,7 +260,7 @@ export function Game (props) {
                                     return (
                                         <div key={i} className="">
                                                                                         
-                                            <div className="relative mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-black/85 text-gray-300 rounded-3xl">
+                                            <div className="relative mx-auto w-[360px] sm:w-[420px] p-4 flex flex-col place-items-center h-full bg-black/85 text-gray-300 rounded-3xl">
                                                 <div key={i} className="mx-auto w-full p-4 flex flex-row gap-8 place-items-center  rounded-3xl">
                                                     <img src={guess.image} className="w-14 rounded-2xl"/>
                                                     <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
@@ -282,7 +284,7 @@ export function Game (props) {
                                                                     return (
                                                                         <div key={`${i}A`} className="z-20 flex flex-col">
                                                                             <h1 className="text-gray-400 text-sm">{capitalizeFirstLetter(title)}</h1>
-                                                                            <p className="text-gray-100">{val}</p>
+                                                                            <p className="text-gray-100 text-wrap w-40 lg:w-60">{val}</p>
                                                                         </div>
                                                                     )
                                                                 }
@@ -292,7 +294,7 @@ export function Game (props) {
                                                 </div>
                                                 <div className="mt-4 flex flex-col place-items-center">
                                                     <h1 className="w-60 text-sm text-gray-400 text-center">Notable Cast</h1>
-                                                    <p className="text-center w-3/4 text-gray-100">{guess['cast'].join(', ')}</p>
+                                                    <p className="text-center w-3/4 text-gray-100 text-wrap">{guess['cast'].join(', ')}</p>
                                                 </div>
 
                                             </div>
@@ -342,7 +344,7 @@ export function Game (props) {
                                                     </div>    
                                                     </>
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div className="relative mx-auto w-[420px] p-4 flex flex-col place-items-center h-full bg-black/85 text-gray-300 rounded-3xl">
+                                                    <div className="relative mx-auto w-[360px] sm:w-[420px] p-4 flex flex-col place-items-center h-full bg-black/85 text-gray-300 rounded-3xl">
                                                         <div key={i} className="mx-auto w-full p-4 flex flex-row gap-8 place-items-center  rounded-3xl">
                                                             <img src={guess.image} className="w-14 rounded-2xl"/>
                                                             <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
@@ -422,7 +424,7 @@ export function Game (props) {
                                                     </>
     
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                    <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
                                                         <img src={guess.image} className="w-14 rounded-2xl"/>
                                                         <h1 className="text-3xl mb-4 italic text-center">{guess.title}</h1>
                                                     </div>
@@ -445,7 +447,7 @@ export function Game (props) {
                                                     </div>
 
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                    <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
                                                         <img src={guess.image} className="w-14 rounded-2xl"/>
                                                         <h1 className="text-3xl mb-4 italic text-center">{history[i - 1].title}</h1>
                                                     </div>
@@ -466,7 +468,7 @@ export function Game (props) {
                                                         {msg}
                                                     </div>
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div key={i} className="mx-auto w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                    <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
                                                         <img src={guess.image} className="w-14 rounded-2xl"/>
                                                         <div className="flex flex-col">
                                                             <h1 className="text-2xl line-through text-center italic">{guess.title}</h1>
@@ -486,9 +488,11 @@ export function Game (props) {
                     </div>
                 </div>
                 
-                <div className="w-[700px] mt-[280px] relative flex justify-center items-center">
-                    <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
-                    <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>
+                <div className="absolute w-[400px] sm:w-[700px] h-[200px] bottom-10 left-1/2 -translate-x-1/2">
+                    <div className="relative w-full h-full flex justify-between place-items-center">
+                        <Timer myTurn={myTurn} roomData={roomData} duration={props.duration} remaining={props.remaining} setRemaining={props.setRemaining} timerKey={props.timerKey}/>
+                        <Input socket={socket} roomData={roomData} roomID={roomID} myTurn={myTurn}/>
+                    </div>
                 </div>
             </div>
             )

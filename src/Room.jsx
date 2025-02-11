@@ -116,10 +116,10 @@ export function Room (props) {
         msgStyle = "absolute flex flex-col place-items-center right-10 bottom-32 w-96 h-[140px] overflow-hidden bg-black/65 text-gray-500 rounded-xl duration-800"
     }
 
-    let playerStyle = "absolute flex flex-col place-items-center left-6 bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
+    let playerStyle = "absolute flex flex-row lg:flex-col w-full lg:w-auto place-items-center left-0 lg:left-6 bottom-0 lg:bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
 
     if (!playerCollapse) {
-        playerStyle = "absolute flex flex-col place-items-center left-6 bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 h-18 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
+        playerStyle = "absolute flex flex-row lg:flex-col w-full lg:w-auto place-items-center left-0 lg:left-6 bottom-0 lg:bottom-12 lg:bottom-auto lg:left-10 lg:top-32 w-64 h-18 bg-black/65 text-gray-500 rounded-xl overflow-hidden duration-600"
     }
  
     
@@ -128,10 +128,10 @@ export function Room (props) {
         if (hasJoined) {
             
             return (
-                <div className="w-full h-full relative flex flex-col place-items-center">
+                <div className="w-full h-full relative flex flex-col place-items-center overflow-hidden">
                     <div className={playerStyle}>
 
-                        <div className="pr-12 pb-1 w-full flex flex-row place-items-center justify-between">
+                        <div className="hidden lg:flex pr-12 pb-1 w-full flex-row place-items-center justify-between">
                             <h1 className="mx-auto text-2xl pt-4 text-gray-300 w-full text-center">Players ({Object.keys(roomData.players).length}/8)</h1>
                             <button className="mt-4 ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
                                 onClick={() => {setPlayerCollapse(!playerCollapse)}}
@@ -142,24 +142,24 @@ export function Room (props) {
                         {
                             Object.keys(roomData.players).map(id => {
 
-                                let statusStyle = "hidden text-xl font-semibold text-green-700";
+                                let statusStyle = "hidden font-semibold text-green-700";
                                 if (roomData.players[id].ready && roomData.status !== "active") {
-                                    statusStyle = "text-xl font-semibold text-green-700"
+                                    statusStyle = "font-semibold text-green-700"
                                 }
 
-                                let nameStyle = "text-3xl font-semibold text-gray-500"
+                                let nameStyle = "font-semibold text-gray-500"
                                 if (roomData.game_data && id === roomData.game_data.current_id) {
-                                    nameStyle = "text-3xl font-semibold text-green-300"
+                                    nameStyle = "font-semibold text-green-300"
                                 }
 
                                 else {
                                     if (roomData.players[id].active === false) {
-                                        nameStyle = "text-3xl font-semibold text-gray-600/80 line-through"
+                                        nameStyle = "font-semibold text-gray-600/80 line-through"
                                     }
                                 }
                             
                                 return (
-                                    <div key={id} className="p-3 pl-10 w-full border-b border-gray-700/15 flex flex-row gap-10 place-items-center">
+                                    <div key={id} className="p-3 lg:pl-10 w-1/8 lg:w-full text-lg sm:text-xl md:text-2xl lg:text-3xl border-r lg:border-b border-gray-700/15 lg:flex flex-row gap-10 place-items-center">
                                         <p className={nameStyle}>
                                             {(roomData.players[id].name)}
                                         </p>

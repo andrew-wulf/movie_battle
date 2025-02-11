@@ -26,7 +26,7 @@ export function Timer(props) {
 
   if (remaining && roomData && (roomData.status === 'active' || roomData.status === 'first_pick')) {
     return (
-      <div key={timerKey} className="absolute left-0 -top-28">
+      <div key={timerKey} className="ml-0">
           <CountDownTimer duration={duration} remaining={remaining}/>
       </div>
     )
@@ -44,7 +44,7 @@ const renderTime = ({ remainingTime }) => {
 
   return (
     <div className="timer">
-      <div className="text-3xl text-gray-200 "><h1>{remainingTime}</h1></div>
+      <div className="text-3xl text-gray-200 mx-auto"><h1>{remainingTime}</h1></div>
       <div className="text"></div>
     </div>
   );

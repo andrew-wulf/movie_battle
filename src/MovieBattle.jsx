@@ -78,7 +78,7 @@ export function MovieBattle() {
   }
 
   return (
-    <div className='relative w-[100vw] h-[100vh] flex justify-center'>
+    <div className='relative w-[100vw] h-[100vh] flex justify-center min-h-[760px]'>
 
       <div className="absolute inset-0 transition-all -z-10 bg-radial-[at_50%_50%] from-[rgb(60,71,231)] to-[rgb(2,7,72)]">
       </div>

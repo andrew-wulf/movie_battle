@@ -50,7 +50,7 @@ export function Content(props) {
   else {
     return (
       <>
-        <div className='absolute top-[120px] flex flex-col gap-2 w-[350px] h-[240px] bg-gray-200 rounded-xl text-black place-items-center'>
+        <div className='absolute top-[80px] flex flex-col gap-2 w-[350px] h-[240px] bg-gray-200 rounded-xl text-black place-items-center'>
           <h1 className='text-xl tracking-loose mt-3 font-semibold'>
             Welcome to Movie Battle
           </h1>
@@ -73,7 +73,7 @@ export function Content(props) {
         </div>
 
 
-        <div className='absolute top-[480px] flex flex-col gap-2 w-[350px] h-[240px] bg-gray-200 rounded-xl text-black place-items-center'>
+        <div className='absolute top-[380px] flex flex-col gap-2 w-[350px] h-[240px] bg-gray-200 rounded-xl text-black place-items-center'>
           <h1 className='text-xl tracking-loose mt-3 font-semibold'>
             Join a Room
           </h1>
@@ -98,8 +98,7 @@ export function Content(props) {
 
 
         <p 
-        
-        className='absolute bottom-[30px] sm:bottom-[60px] text-md sm:text-xl text-gray-300'
+        className='absolute bottom-[30px] text-center text-md text-gray-300'
         >
           This game is made possible by the API provided by <a className="text-sky-500 hover:text-sky-400" href={"https://developer.themoviedb.org/docs/getting-started"} target="_blank" >themoviedb.org!</a>
         </p>

@@ -78,61 +78,67 @@ export function Input(props) {
     if (roomData) {
         if (searchResults) {
             return (
-                <div className="w-[500px] h-12 relative bottom-24">
-                    <div className="z-0 absolute bottom-10 flex flex-col gap-2 w-[500px] text-black bg-[rgb(208,208,228)] text-lg rounded-t-xl overflow-hidden">
-                        {
-                            searchResults.map((obj, i) => {
-                                return (
-                                    <p className="w-full hover:cursor-pointer hover:bg-sky-100" 
-                                        key={i}
-                                        onClick={() => {submit(obj)}}
-                                        >
-                                        {`${obj.title} (${obj.release_date.substring(0,4)})`}
-                                    </p>
-                                )
-                            })
-                        }
-                    </div>
+                <div className="w-[220px] sm:w-[500px] h-12 absolute left-1/2 -translate-x-1/2">
+
+                    <div className="relative w-full h-full">
+                        <div className="z-0 absolute bottom-10 flex flex-col gap-2 w-[500px] text-black bg-[rgb(208,208,228)] text-lg rounded-t-xl overflow-hidden">
+                            {
+                                searchResults.map((obj, i) => {
+                                    return (
+                                        <p className="w-full hover:cursor-pointer hover:bg-sky-100" 
+                                            key={i}
+                                            onClick={() => {submit(obj)}}
+                                            >
+                                            {`${obj.title} (${obj.release_date.substring(0,4)})`}
+                                        </p>
+                                    )
+                                })
+                            }
+                        </div>
+            
+            
+                        <input className="z-10 w-[220px] sm:w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
+                            placeholder="Enter a movie title."
+                            value={inputVal}
+                            onChange={handleUpdate}
+                            disabled={!myTurn}
+                        >
+                        </input>
         
-        
-                    <input className="z-10 w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
-                        placeholder="Enter a movie title."
-                        value={inputVal}
-                        onChange={handleUpdate}
-                        disabled={!myTurn}
-                    >
-                    </input>
-    
-                    <div className=" mt-4 flex flex-row gap-5 w-500px justify-end">
-                        <button className="text-yellow-300/80 hover:text-yellow-300 disabled:opacity-40 disabled:hover:text-yellow-300/80 hover:cursor-pointer disabled:hover:cursor-default" 
-                        disabled={!myTurn || !roomData.players[roomData.game_data.current_id].lifelines['time']} 
-                        hidden={roomData.status ==='first_pick'} 
-                        onClick={() => {useLifeline('time')}}
+                        <div className=" mt-4 flex flex-row gap-5 w-500px justify-end"
+                        hidden={!myTurn}
                         >
-                            <RiTimerFlashLine  className="w-8 h-8 "/>
-                        </button>
-                        <button className="text-green-600/80 hover:text-green-500 disabled:opacity-40 disabled:hover:text-green-600/80 hover:cursor-pointer disabled:hover:cursor-default" 
-                        disabled={!myTurn || !roomData.players[roomData.game_data.current_id].lifelines['skip'] || Object.keys(roomData.players).length < 2} 
-                        hidden={roomData.status ==='first_pick'} 
-                        onClick={() => {useLifeline('skip')}}
-                        >
-                            <BiSolidSkipNextCircle  className="w-8 h-8 "/>                  
-                        </button>
-                        <button className="text-gray-300/80 hover:text-white disabled:opacity-40 disabled:hover:text-gray-300/80 hover:cursor-pointer disabled:hover:cursor-default" 
-                        disabled={!myTurn || !roomData.players[roomData.game_data.current_id].lifelines['info'] || (roomData.game_data.history.length > 0 && roomData.game_data.history[roomData.game_data.history.length - 1].show_info)} 
-                        hidden={roomData.status ==='first_pick'} 
-                        onClick={() => {useLifeline('info')}}
-                        >
-                            <MdMovieEdit  className="w-8 h-8 "/>               
-                        </button>
+                            <button className="text-yellow-300/80 hover:text-yellow-300 disabled:opacity-40 disabled:hover:text-yellow-300/80 hover:cursor-pointer disabled:hover:cursor-default" 
+                            disabled={!myTurn || !roomData.players[roomData.game_data.current_id].lifelines['time']} 
+                            hidden={roomData.status ==='first_pick'} 
+                            onClick={() => {useLifeline('time')}}
+                            >
+                                <RiTimerFlashLine  className="w-8 h-8 "/>
+                            </button>
+                            <button className="text-green-600/80 hover:text-green-500 disabled:opacity-40 disabled:hover:text-green-600/80 hover:cursor-pointer disabled:hover:cursor-default" 
+                            disabled={!myTurn || !roomData.players[roomData.game_data.current_id].lifelines['skip'] || Object.keys(roomData.players).length < 2} 
+                            hidden={roomData.status ==='first_pick'} 
+                            onClick={() => {useLifeline('skip')}}
+                            >
+                                <BiSolidSkipNextCircle  className="w-8 h-8 "/>                  
+                            </button>
+                            <button className="text-gray-300/80 hover:text-white disabled:opacity-40 disabled:hover:text-gray-300/80 hover:cursor-pointer disabled:hover:cursor-default" 
+                            disabled={!myTurn || !roomData.players[roomData.game_data.current_id].lifelines['info'] || (roomData.game_data.history.length > 0 && roomData.game_data.history[roomData.game_data.history.length - 1].show_info)} 
+                            hidden={roomData.status ==='first_pick'} 
+                            onClick={() => {useLifeline('info')}}
+                            >
+                                <MdMovieEdit  className="w-8 h-8 "/>               
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             )
         }
         else {
             return (
-                <div className="w-[500px] h-12 relative bottom-24">
-                    <input className="z-10 w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
+                <div className="w-[220px] sm:w-[500px] h-12 relative bottom-24">
+                    <input className="z-10 w-[220px] sm:w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
                         placeholder="Enter a movie title."
                         value={inputVal}
                         onChange={handleUpdate}
