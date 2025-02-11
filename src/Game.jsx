@@ -286,7 +286,7 @@ export function Game (props) {
                                                                     return (
                                                                         <div key={`${i}A`} className="z-20 flex flex-col">
                                                                             <h1 className="text-gray-400 text-sm">{capitalizeFirstLetter(title)}</h1>
-                                                                            <p className="text-gray-100 text-wrap w-40 lg:w-60">{val}</p>
+                                                                            <p className="text-gray-100 text-wrap w-30 sm:w-44">{val}</p>
                                                                         </div>
                                                                     )
                                                                 }
