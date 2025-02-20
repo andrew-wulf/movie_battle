@@ -37,7 +37,7 @@ export function Input(props) {
         })
     
         if (cached === false) {
-            console.log(searchCache)
+            //console.log(searchCache)
             if (val.length > 1 && searchCache.length > 0 && searchCache[searchCache.length - 1][1].length < 1) {
                 setSearchCache(searchCache => [...searchCache, [val, []]])
             }

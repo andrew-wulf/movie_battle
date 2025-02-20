@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Input } from "./Input";
 import { Timer } from "./Timer";
+import { FaBan } from "react-icons/fa";
+import { HiLink } from "react-icons/hi";
 
 export function Game (props) {
 
@@ -133,6 +135,16 @@ export function Game (props) {
                         <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Lifelines</span>
                     </label>
 
+                    <label className="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" className="sr-only peer"
+                            checked={roomData.options.hard_mode}
+                            onChange={() => {optionsUpdate('hard_mode', !roomData.options.hard_mode)}}
+                            disabled={Object.keys(roomData.players)[0] === myID ? false : true}
+                        />
+                        <div className="relative w-11 h-6 bg-[rgb(194,191,204)] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"/>
+                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Hard Mode</span>
+                    </label>
+
                     {/* <label className="inline-flex items-center cursor-pointer">
                         <input type="checkbox" value="" className="sr-only peer"
                             checked={banOption}
@@ -225,11 +237,11 @@ export function Game (props) {
     
         let hiddenStyle = ""
         if (roomData.status === 'finished') {
-          hiddenStyle = "opacity-10 duration-[3s] delay-[2s] ease-in place-items-center h-full"}
+          hiddenStyle = "opacity-100 duration-[3s] delay-[2s] ease-in place-items-center h-full"}
         else {
           hiddenStyle = "opacity-100 place-items-center h-full"
         }
-        
+        /////
     
     
         let history = gameData.history
@@ -242,6 +254,21 @@ export function Game (props) {
             if (history.length === 1 && roomData.status !== 'finished') {
                 img = <img key={history[0].image} src={history[0].image} className="absolute h-[260px] top-[460px] left-1/2 -translate-x-1/2 rounded-xl animate-fade-out-scale" style={{animationDelay: '5s'}}/>
                              
+            }
+
+            let mostRecentSuccessIndex = 0;
+
+            if (history.length > 1) {
+                let j = history.length - 1;
+                while (j > 0) {
+                    let curr = history[j];
+
+                    if (curr.success === 'success') {
+                        mostRecentSuccessIndex = j;
+                    }
+
+                    j--;
+                }
             }
 
             return (    
@@ -308,7 +335,8 @@ export function Game (props) {
     
                                     if (guess.success === 'success') {
 
-                                        let role = `${guess.second_role}, ${guess.first_role}`
+                                        let arr = [guess.second_role, guess.first_role];
+                                        let role = arr.filter(n => n !== null).join(', ');
 
                                         if (guess.show_info) {
 
@@ -317,32 +345,40 @@ export function Game (props) {
 
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
                                                     <>
-                                                    <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                        <p className="text-lg font-light">{capitalizeFirstLetter(role)}</p>
-                                                        <p className="text-2xl">{guess.name}</p>
-                                                        <div className="flex flex-row gap-2 font-bold text-xl">
-                                                            
-                                                        {
-                                                            guess.link_usage.map((bool, i) => {
-                                                                if (bool) {
-                                                                    return (
-                                                                        <div key={i} className="text-[rgb(70,20,20)]">
-                                                                            &#x2715;
-                                                                        </div>
-                                                                    )
-                                                                }
-                                                                else {
-                                                                    return (
-                                                                        <div key={i} className="text-gray-800/60">
-                                                                            &#x2715;
-                                                                        </div>
-                                                                    )
-                                                                }
-                                                            })
-                                                            
-                                                        }   
-                                                            
+                                                    <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center relative bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+
+                                                        <div className="absolute text-4xl text-green-600">
+                                                            <HiLink/>
                                                         </div>
+
+                                                        <div>
+                                                            <p className="text-lg font-light">{capitalizeFirstLetter(role)}</p>
+                                                            <p className="text-2xl">{guess.name}</p>
+                                                            <div className="flex flex-row gap-2 font-bold text-xl">
+                                                                
+                                                            {
+                                                                guess.link_usage.map((bool, i) => {
+                                                                    if (bool) {
+                                                                        return (
+                                                                            <div key={i} className="text-[rgb(70,20,20)]">
+                                                                                &#x2715;
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                    else {
+                                                                        return (
+                                                                            <div key={i} className="text-gray-800/60">
+                                                                                &#x2715;
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                })
+                                                                
+                                                            }   
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    
                                                     </div>    
                                                     </>
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
@@ -356,7 +392,6 @@ export function Game (props) {
                                                             {
                                                                 ['director', 'screenplay', 'cinematographer', 'composer'].map((title, i) => {
                                                                     if (guess[title]) {
-
 
                                                                         let val = guess[title].slice(0, 2).join(', ')
                                                                         
@@ -441,45 +476,71 @@ export function Game (props) {
                                             return (
                                                 <div key={i} className="place-items-center">
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div className="mx-auto w-[240px] py-2 px-4 flex flex-row place-items-center gap-4 bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                        <div className="text-4xl text-[rgb(128,36,36)]">
+                                                    <div className="mx-auto w-[240px] py-2 px-4 flex flex-row place-items-center relative gap-4 bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                        <div className="absolute text-4xl text-[rgb(128,36,36)]">
                                                              &#x2715;
                                                         </div>
-                                                        <p>Out of time!</p>                                   
+                                                        <p className="mx-auto py-2 text-lg">Out of time!</p>                                   
                                                     </div>
 
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
                                                     <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
-                                                        <img src={guess.image} className="w-14 rounded-2xl"/>
-                                                        <h1 className="text-3xl mb-4 italic text-center">{history[i - 1].title}</h1>
+                                                        <img src={history[mostRecentSuccessIndex].image} className="w-14 rounded-2xl"/>
+                                                        <h1 className="text-3xl mb-4 italic text-center">{history[mostRecentSuccessIndex].title}</h1>
                                                     </div>
                                                 </div>
                                             )
                                         }
                                         else {
-                                            let content = <></>;
-                                            let msg = 'No links';
-                                            if (guess.success === 'taken') {
-                                                msg = 'Taken!'
-                                            }
+                                            if (guess.success === 'blacklisted') {
+                                                return (
+                                                    <div key={i} className="place-items-center">
+                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                        <div className="mx-auto w-[240px] py-2 px-4 flex flex-row place-items-center relative gap-4 bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                            <div className="absolute text-4xl text-[rgb(128,36,36)]">
+                                                                 <FaBan/>
+                                                            </div>
+                                                            <div className="flex flex-col text-center mx-auto">
+                                                                <p className="text-xl">{guess.name}</p>                           
+                                                                <p className="text-[rgb(216,57,57)]/60 text-lg">Blacklisted</p>        
+                                                            </div>
 
-                                            return (
-                                                <div key={i} className="place-items-center">
-                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                        {msg}
-                                                    </div>
-                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
-                                                        <img src={guess.image} className="w-14 rounded-2xl"/>
-                                                        <div className="flex flex-col">
-                                                            <h1 className="text-2xl line-through text-center italic">{guess.title}</h1>
-                                                            <h1 className="text-xl text-center font-semibold">Current movie: <b className="italic font-bold tracking-tight">{history[i - 1].title}</b> </h1>
+                                                        </div>
+    
+                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                        <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                            <img src={history[mostRecentSuccessIndex].image} className="w-14 rounded-2xl"/>
+                                                            <h1 className="text-3xl mb-4 italic text-center">{history[mostRecentSuccessIndex].title}</h1>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                )
+                                            }
+
+                                            else {
+                                                let content = <></>;
+                                                let msg = 'No links';
+                                                if (guess.success === 'taken') {
+                                                    msg = 'Taken!'
+                                                }
     
-                                            )
+                                                return (
+                                                    <div key={i} className="place-items-center">
+                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                        <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                            {msg}
+                                                        </div>
+                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                        <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                            <img src={history[mostRecentSuccessIndex].image} className="w-14 rounded-2xl"/>
+                                                            <div className="flex flex-col">
+                                                                <h1 className="text-2xl line-through text-center italic">{guess.title}</h1>
+                                                                <h1 className="text-xl text-center font-semibold">Current movie: <b className="italic font-bold tracking-tight">{history[mostRecentSuccessIndex].title}</b> </h1>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+        
+                                                )
+                                            }
                                         }
 
                                     }
