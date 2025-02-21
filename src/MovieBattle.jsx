@@ -5,6 +5,9 @@ import { Content } from './Content';
 
 
 import { useEffect, useState } from 'react';
+import { RiTimerFlashLine } from 'react-icons/ri';
+import { BiSolidSkipNextCircle } from 'react-icons/bi';
+import { MdMovieEdit } from 'react-icons/md';
 
 let mode = process.env.NODE_ENV
 let connectUrl = mode === "development" ? "http://localhost:4000" : "https://movie-battle-server-2ff362fad49d.herokuapp.com"
@@ -24,10 +27,10 @@ export function MovieBattle() {
   const connect = () => {
     let storageID = localStorage.getItem("id");
     if (storageID) {
-      console.log('Storage ID detected: ', storageID)
+      //console.log('Storage ID detected: ', storageID)
     }
 
-    console.log('connecting...')
+    //console.log('connecting...')
     socket.connect();
     //console.log(socket)
 
@@ -45,7 +48,7 @@ export function MovieBattle() {
     socket.on('login', () => {
       let storageID = localStorage.getItem('id');
       let nickname = localStorage.getItem('nickname');
-      console.log('attempting to login as ', storageID)
+      //console.log('attempting to login as ', storageID)
       socket.emit('login', storageID, nickname)
     })
     socket.on("connected", () => {
@@ -121,21 +124,38 @@ function HelpModal (props) {
             <p className='text-xl w-[300px] sm:w-[360px] lg:w-[580px] text-center text-gray-900 leading-8'>Once a starting movie is picked, players take turns
               entering <b className='text-gray-800'>movie titles</b> that are <b className='text-gray-800'>linked</b> via sharing cast or crew members.<br/><br/>
               Movie titles can never be used twice, and if a given movie doesn't share at least one cast or crew member with the previous title, or 
-              the <b className='text-gray-800'>timer</b> runs out, the player who entered it gets <b className='text-gray-800'>eliminated.</b> The 
+              the timer runs out, the player who entered it gets <b className='text-gray-800'>eliminated.</b> The 
               last player standing wins the round!</p>
 
             <h1 className='text-2xl mb-4 font-semibold mt-10'>Used Links</h1>
 
             <p className='text-xl w-[300px] sm:w-[360px] lg:w-[580px] text-center text-gray-900 leading-8'>Individual actors, directors, writers etc. can only be used as a link up 
-              to <b className='text-gray-800'>three times.</b> After three uses, they're <b className='text-gray-800'>banned </b>and won't be considered. 
-              If hard mode is activated, picking a movie with a banned link results in elimination. If bans are turned on, players can ban one actors each before the match starts.</p>
+              to <b className='text-gray-800'>three times.</b> After three uses, they're <b className='text-gray-800'>blacklisted </b>and won't be considered. 
+              If hard mode is activated, picking a movie that contains a blacklisted cast/crew member results in elimination. If bans are turned on, players can make one ban each before the match starts.</p>
 
             <h1 className='text-2xl mb-4 font-semibold mt-10'>Lifelines</h1>
             <p className='text-xl w-[300px] sm:w-[360px] lg:w-[580px] text-center text-gray-900 leading-8'>
               There are three single-use lifelines that players can use if lifelines are enabled in 
-              options: <b className='text-gray-800'>Add Time</b> increases the timer duration by 50%, <b className='text-gray-800'>Skip Turn</b> gives 
-              a free pass, and <b className='text-gray-800'>Movie Info</b> lists cast and crew for the current movie.
+              options:
             </p>
+            
+            <div className='flex flex-col gap-6 text-xl w-[300px] sm:w-[360px] lg:w-[580px] place-items-center'>
+              <div className='flex gap-6'>
+                <RiTimerFlashLine  className="w-8 h-8 mr-auto mt-1"/>
+                <p className='mr-auto max-w-[280px] lg:max-w-[320px]'>Increases the timer duration by 50%.</p>
+              </div>
+
+              <div className='flex gap-6'>
+                <BiSolidSkipNextCircle  className="w-8 h-8 mr-auto mt-1"/>
+                <p className='mr-auto max-w-[280px] lg:max-w-[320px]'>Skips your turn. (If the last two players skip back-to-back, game ends in a tie.)</p>
+              </div>
+
+              <div className='flex gap-6'>
+                <MdMovieEdit  className="w-8 h-8 mr-auto mt-1"/>
+                <p className='mr-auto max-w-[280px] lg:max-w-[320px]'>Lists cast and crew for the current movie.</p>
+              </div>
+            </div>
+
           </div>
 
         </div>

@@ -16,6 +16,7 @@ export function Room (props) {
     const [roomExists, setRoomExists] = useState(true);
     const [hasJoined, setHasJoined] = useState(false);
     const [nameInput, setNameInput] = useState("");
+    const [readyCount, setReadyCount] = useState(0);
 
     const [msgInput, setMsgInput] = useState("");
     const [msgCollapse, setMsgCollapse] = useState(true);
@@ -38,9 +39,9 @@ export function Room (props) {
 
     useEffect(() => {
         if (connected) {
-            console.log(roomID)
+            //console.log(roomID)
             socket.emit('room_status', roomID)
-            console.log('fetching room status...')
+            //console.log('fetching room status...')
         }
     }, [socket, connected, roomID])
 
@@ -48,7 +49,7 @@ export function Room (props) {
 
     useEffect(() => {
         socket.on('room_update', (data) => {
-            console.log('update: ', data)
+            //console.log('update: ', data)
             if (data) {
                 setRoomExists(true)
                 setRoomData(data);
@@ -91,7 +92,22 @@ export function Room (props) {
         if (timerRemaining === timerDuration && timerRemaining > 0) {
             setTimerKey(timerKey + 1);
         }
-    }, [timerRemaining, timerDuration])
+    }, [timerRemaining, timerDuration]);
+
+
+    useEffect(() => {
+        if (roomData) {
+            if (roomData.status === 'pre-game' || roomData.status === 'finished') {
+                let count = 0;
+                Object.keys(roomData.players).forEach(key => {
+                    if (roomData.players[key].ready) {
+                        count++;
+                    }
+                })
+                setReadyCount(count);
+            }
+        }
+    }, [roomData])
 
 
     const joinLobby = () => {
@@ -130,7 +146,7 @@ export function Room (props) {
             return (
                 <div className="w-full h-full relative flex flex-col place-items-center overflow-hidden">
 
-                    <button className='z-30 absolute top-3 lg:top-5 right-3 lg:right-10 w-32 h-12 bg-black/50 text-gray-300 rounded-xl hover:cursor-pointer hover:bg-black/70 hover:shadow hover:shadow-blue-600 text-lg font-semibold'
+                    <button className='z-30 absolute top-3 lg:top-5 right-3 lg:right-10 w-32 h-12 bg-black/50 text-gray-300 rounded-xl hover:cursor-pointer hover:bg-black/70 hover:shadow hover:shadow-blue-800 text-lg font-semibold'
                         onClick={() => {props.setModalVisible(true)}}
                         hidden={window.innerWidth < 700 && !['pre-game', 'finished'].includes(roomData.status)}
                         >
@@ -139,9 +155,9 @@ export function Room (props) {
 
                     <div className={playerStyle}>
 
-                        <div className="hidden lg:flex pr-12 pb-1 w-full flex-row place-items-center justify-between">
-                            <h1 className="mx-auto text-2xl pt-4 text-gray-300 w-full text-center">Players ({Object.keys(roomData.players).length}/8)</h1>
-                            <button className="mt-4 ml-auto w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
+                        <div className="hidden lg:flex pr-6 pb-1 w-full flex-row place-items-center justify-between">
+                            <h1 className="mx-auto text-2xl pt-4 pl-4 text-gray-300 w-full text-center">Players ({Object.keys(roomData.players).length}/8)</h1>
+                            <button className="mt-4 ml-2 w-10 h-10 rounded-md place-items-center text-gray-200 border border-gray-700 hover:cursor-pointer hover:bg-gray-700"
                                 onClick={() => {setPlayerCollapse(!playerCollapse)}}
                             >
                                 <MdOutlineKeyboardArrowDown className="w-6 h-6"/>
@@ -254,9 +270,9 @@ export function Room (props) {
 
 
 
-                    <Game roomData={roomData} socket={socket} roomID={roomID} myTurn={myTurn} duration={timerDuration} remaining={timerRemaining} setRemaining={setTimerRemaining} timerKey={timerKey}/>
+                    <Game roomData={roomData} socket={socket} roomID={roomID} myTurn={myTurn} duration={timerDuration} remaining={timerRemaining} setRemaining={setTimerRemaining} timerKey={timerKey} readyCount={readyCount}/>
                     {/* <button className='fixed left-40 bottom-20 bg-black text-white rounded-lg w-20 h-10 hover:cursor-pointer z-100' onClick={() => {setTest(!test)}}>Test</button> */}
-                    <GameOverModal show={roomData.status === 'finished' ? true : false} socket={socket} roomID={roomID} roomData={roomData}/>
+                    <GameOverModal show={roomData.status === 'finished' ? true : false} socket={socket} roomID={roomID} roomData={roomData} readyCount={readyCount}/>
 
                 </div>
             )

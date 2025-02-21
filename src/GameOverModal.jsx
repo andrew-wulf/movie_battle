@@ -3,6 +3,7 @@ export function GameOverModal(props) {
     let socket = props.socket;
     let roomID = props.roomID;
     let roomData = props.roomData;
+    let readyCount = props.readyCount
 
     const startMatch = () => {
         socket.emit('start_match', roomID)
@@ -47,6 +48,12 @@ export function GameOverModal(props) {
         roundcount = Math.max(history.length - 1, 0)
       }
 
+      let readyMsg = <></>;
+
+      if (readyCount > 0 && roomData.players) {
+          readyMsg = <p className="absolute right-3/16 text-lg pb-1 text-gray-400 font-bold">{readyCount}/{Object.keys(roomData.players).length}</p>
+      }
+
       return (
           <section onClick={(e) => {e.stopPropagation(); }} className={hiddenStyle}>
             {msg}
@@ -58,11 +65,14 @@ export function GameOverModal(props) {
                 Play again?
             </p>
 
-            <button className={buttonStyle}
-                onClick={startMatch}
-                >
-                    {buttonMsg}
-            </button>
+            <div className="relative flex w-[400px] place-items-center">
+              <button className={buttonStyle}
+                  onClick={startMatch}
+                  >
+                      {buttonMsg}
+              </button>
+              {readyMsg}
+            </div>
   
           </section>
       );

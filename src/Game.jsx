@@ -8,15 +8,7 @@ import { MdOutlineTimerOff } from "react-icons/md";
 
 export function Game (props) {
 
-
-    const [lifelines, setLifelines] = useState(true);
-    const [banOption, setBanOption] = useState(false);
-    const [hardMode, setHardMode] = useState(false);
-    const [randomStart, setRandomStart] = useState(false);
-    const [randomType, setRandomType] = useState('popular');
-    const [timerSetting, setTimerSetting] = useState(30);
     const [mostRecentSuccessIndex, setMostRecentSuccessIndex] = useState(0);
-
 
     const [translateY, setTranslateY] = useState(0);
     const [historyStyle, setHistoryStyle] = useState("absolute w-full flex flex-col duration-[3s] ease-out")
@@ -30,6 +22,7 @@ export function Game (props) {
 
     let gameData = roomData.game_data;
 
+    let readyCount = props.readyCount;
     
 
 
@@ -72,25 +65,27 @@ export function Game (props) {
 
 
     useEffect(() => {
-
-        let history = roomData.game_data.history;
-        if (history) {
-            let j = history.length - 1;
-    
-            if (history.length > 1) {
-    
-                while (j > 0) {
-                    let curr = history[j];
-    
-                    if (curr.success === 'success') {
-                        setMostRecentSuccessIndex(j);
-                        break;
+        if (roomData.game_data) {
+            let history = roomData.game_data.history;
+            if (history) {
+                let j = history.length - 1;
+        
+                if (history.length > 1) {
+        
+                    while (j > 0) {
+                        let curr = history[j];
+        
+                        if (curr.success === 'success') {
+                            setMostRecentSuccessIndex(j);
+                            break;
+                        }
+        
+                        j--;
                     }
-    
-                    j--;
                 }
             }
         }
+
     }, [roomData])
 
 
@@ -118,8 +113,14 @@ export function Game (props) {
     
             if (roomData.players[myID].ready) {
                 buttonMsg = "Ready"
-                buttonStyle = "mt-5 mb-5 mx-auto w-40 min-h-10 bg-blue-800/80 shadow-md shadow-gray-400 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
+                buttonStyle = "mt-2 mb-5 mx-auto w-40 min-h-10 bg-blue-800/80 shadow-md shadow-gray-400 rounded-2xl text-lg font-semibold text-black hover:cursor-pointer hover:bg-blue-700/70 tracking-wide"
             }
+        }
+
+        let readyMsg = <></>;
+
+        if (readyCount > 0 && roomData.players) {
+            readyMsg = <p className="absolute right-3/16 text-lg pb-3 text-gray-900 font-bold">{readyCount}/{Object.keys(roomData.players).length}</p>
         }
 
         let myID = localStorage.getItem('id')
@@ -225,11 +226,15 @@ export function Game (props) {
                     </div>
                 </div>
 
-                <button className={buttonStyle}
-                    onClick={startMatch}
-                >
-                    {buttonMsg}
-                </button>
+                <div className="relative flex w-full place-items-center">
+                    <button className={buttonStyle}
+                        onClick={startMatch}
+                    >
+                        {buttonMsg}
+                    </button>
+                    {readyMsg}
+                </div>
+
             </div>
         )
     }
