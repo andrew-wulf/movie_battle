@@ -3,6 +3,8 @@ import { Input } from "./Input";
 import { Timer } from "./Timer";
 import { FaBan } from "react-icons/fa";
 import { HiLink } from "react-icons/hi";
+import { HiLinkSlash } from "react-icons/hi2";
+import { MdOutlineTimerOff } from "react-icons/md";
 
 export function Game (props) {
 
@@ -13,6 +15,7 @@ export function Game (props) {
     const [randomStart, setRandomStart] = useState(false);
     const [randomType, setRandomType] = useState('popular');
     const [timerSetting, setTimerSetting] = useState(30);
+    const [mostRecentSuccessIndex, setMostRecentSuccessIndex] = useState(0);
 
 
     const [translateY, setTranslateY] = useState(0);
@@ -64,6 +67,30 @@ export function Game (props) {
             }
         }
 
+    }, [roomData])
+
+
+
+    useEffect(() => {
+
+        let history = roomData.game_data.history;
+        if (history) {
+            let j = history.length - 1;
+    
+            if (history.length > 1) {
+    
+                while (j > 0) {
+                    let curr = history[j];
+    
+                    if (curr.success === 'success') {
+                        setMostRecentSuccessIndex(j);
+                        break;
+                    }
+    
+                    j--;
+                }
+            }
+        }
     }, [roomData])
 
 
@@ -208,10 +235,15 @@ export function Game (props) {
     }
 
     if (roomData.status === 'first_pick') {
+        let msg = `${gameData.current_name.name} is picking the first movie.`;
+        if (myTurn) {
+            msg = 'Pick the first movie!'
+        }
+
         return (
             <>
             <div className="relative mx-auto lg:min-w-[600px] lg:min-h-[600px] flex flex-col overflow-hidden">
-                <h1 className="text-gray-200 text-4xl font-semibold mx-auto mt-80 text-center">{gameData.current_name.name} is picking the first movie.</h1>
+                <h1 className="text-gray-200 text-4xl font-semibold mx-auto mt-80 text-center">{msg}</h1>
             </div>
                 <div className="absolute w-full p-2 sm:w-[700px] h-[200px] bottom-10 left-1/2 -translate-x-1/2">
                     <div className="relative w-full h-full flex justify-between place-items-center">
@@ -237,7 +269,7 @@ export function Game (props) {
     
         let hiddenStyle = ""
         if (roomData.status === 'finished') {
-          hiddenStyle = "opacity-100 duration-[3s] delay-[2s] ease-in place-items-center h-full"}
+          hiddenStyle = "opacity-10 duration-[3s] delay-[2s] ease-in place-items-center h-full"}
         else {
           hiddenStyle = "opacity-100 place-items-center h-full"
         }
@@ -254,21 +286,6 @@ export function Game (props) {
             if (history.length === 1 && roomData.status !== 'finished') {
                 img = <img key={history[0].image} src={history[0].image} className="absolute h-[260px] top-[460px] left-1/2 -translate-x-1/2 rounded-xl animate-fade-out-scale" style={{animationDelay: '5s'}}/>
                              
-            }
-
-            let mostRecentSuccessIndex = 0;
-
-            if (history.length > 1) {
-                let j = history.length - 1;
-                while (j > 0) {
-                    let curr = history[j];
-
-                    if (curr.success === 'success') {
-                        mostRecentSuccessIndex = j;
-                    }
-
-                    j--;
-                }
             }
 
             return (    
@@ -471,79 +488,61 @@ export function Game (props) {
                                         }
                                         
                                     }
-                                    else {
-                                        if (guess.success === 'expired') {
-                                            return (
-                                                <div key={i} className="place-items-center">
-                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div className="mx-auto w-[240px] py-2 px-4 flex flex-row place-items-center relative gap-4 bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                        <div className="absolute text-4xl text-[rgb(128,36,36)]">
-                                                             &#x2715;
-                                                        </div>
-                                                        <p className="mx-auto py-2 text-lg">Out of time!</p>                                   
+                                    else {                           
+                                        let content = <></>;
+                                        let icon = <HiLinkSlash/>;
+
+                                        let msg =  <div className="flex flex-col text-center mx-auto py-4">
+                                                        <p className="text-xl">No links</p>                               
                                                     </div>
 
-                                                    <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                    <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
-                                                        <img src={history[mostRecentSuccessIndex].image} className="w-14 rounded-2xl"/>
-                                                        <h1 className="text-3xl mb-4 italic text-center">{history[mostRecentSuccessIndex].title}</h1>
+                                        if (guess.success === 'taken') {
+                                            msg =   <div className="flex flex-col text-center mx-auto py-4">
+                                                        <p className="text-xl">Taken!</p>                               
+                                                    </div>
+                                            icon = <FaBan/>
+                                        }
+
+                                        if (guess.success === 'blacklisted') {
+                                            msg =   <div className="flex flex-col text-center mx-auto py-2">
+                                                        <p className="text-xl">{guess.name}</p>                           
+                                                        <p className="text-[rgb(216,57,57)]/60 text-lg">Blacklisted</p>        
+                                                    </div>
+                                            icon = <FaBan/>
+                                        }
+
+                                        if (guess.success === 'expired') {
+                                            msg =   <div className="flex flex-col text-center mx-auto py-4">
+                                                        <p className="text-xl">Time's up!</p>                                
+                                                    </div>
+                                            icon = <MdOutlineTimerOff/>
+                                        }
+
+                                        let j = 0;
+                                        if (mostRecentSuccessIndex) {
+                                            j = mostRecentSuccessIndex;
+                                        }
+
+                                        return (
+                                            <div key={i} className="place-items-center">
+                                                <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                <div className="mx-auto w-[240px] flex flex-col place-items-center relative bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                    <div className="absolute text-4xl text-[rgb(128,36,36)] left-0 top-1/2 -translate-y-1/2 pl-4">
+                                                            {icon}
+                                                    </div>
+                                                    {msg}
+                                                </div>
+                                                <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
+                                                <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
+                                                    <img src={history[history.length - 1].image} className="w-14 rounded-2xl"/>
+                                                    <div className="flex flex-col">
+                                                        <h1 className="text-2xl line-through text-center italic">{guess.title}</h1>
+                                                        <h1 className="text-xl text-center font-semibold">Current movie: <b className="italic font-bold tracking-tight">{history[j].title}</b> </h1>
                                                     </div>
                                                 </div>
-                                            )
-                                        }
-                                        else {
-                                            if (guess.success === 'blacklisted') {
-                                                return (
-                                                    <div key={i} className="place-items-center">
-                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                        <div className="mx-auto w-[240px] py-2 px-4 flex flex-row place-items-center relative gap-4 bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                            <div className="absolute text-4xl text-[rgb(128,36,36)]">
-                                                                 <FaBan/>
-                                                            </div>
-                                                            <div className="flex flex-col text-center mx-auto">
-                                                                <p className="text-xl">{guess.name}</p>                           
-                                                                <p className="text-[rgb(216,57,57)]/60 text-lg">Blacklisted</p>        
-                                                            </div>
-
-                                                        </div>
-    
-                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                        <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
-                                                            <img src={history[mostRecentSuccessIndex].image} className="w-14 rounded-2xl"/>
-                                                            <h1 className="text-3xl mb-4 italic text-center">{history[mostRecentSuccessIndex].title}</h1>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
-
-                                            else {
-                                                let content = <></>;
-                                                let msg = 'No links';
-                                                if (guess.success === 'taken') {
-                                                    msg = 'Taken!'
-                                                }
-    
-                                                return (
-                                                    <div key={i} className="place-items-center">
-                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                        <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                            {msg}
-                                                        </div>
-                                                        <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
-                                                        <div key={i} className="mx-auto w-[360px] sm:w-[420px] p-4 flex flex-row gap-8 place-items-center bg-black/85 text-gray-300 rounded-3xl">
-                                                            <img src={history[mostRecentSuccessIndex].image} className="w-14 rounded-2xl"/>
-                                                            <div className="flex flex-col">
-                                                                <h1 className="text-2xl line-through text-center italic">{guess.title}</h1>
-                                                                <h1 className="text-xl text-center font-semibold">Current movie: <b className="italic font-bold tracking-tight">{history[mostRecentSuccessIndex].title}</b> </h1>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-        
-                                                )
-                                            }
-                                        }
-
-                                    }
+                                            </div>
+                                        )
+                                    }                                   
                                 }
                             })
                         }

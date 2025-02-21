@@ -77,6 +77,13 @@ export function Input(props) {
     
     if (roomData) {
         if (searchResults) {
+
+            let msg = <></>;
+
+            if (roomData.status === 'active') {
+                msg = <h1 className="text-gray-200 text-4xl font-semibold text-center">{`${roomData.game_data.current_name.name}'s turn.`}</h1> ;
+            }
+
             return (
                 <div className="w-[220px] sm:w-[500px] h-12 absolute left-1/2 -translate-x-1/2">
 
@@ -98,8 +105,13 @@ export function Input(props) {
                                 })
                             }
                         </div>
-            
-            
+
+                        <div className="absolute bottom-[-12px] sm:bottom-2 left-1/2 -translate-x-1/2"
+                        hidden={myTurn}
+                        >
+                            {msg}
+                        </div>
+
                         <input className="z-10 w-[220px] sm:w-[500px] h-12 bg-[rgb(208,208,228)]/80 text-black rounded-xl text-center text-lg opacity-100 disabled:opacity-0 duration-500"
                             placeholder="Enter a movie title."
                             value={inputVal}
