@@ -15,10 +15,22 @@ export function GameOverModal(props) {
                   Game Over
                 </h1>;
 
-      if (Object.keys(roomData.players).length > 1 && roomData.game_data.winner_id) {
+      let winner_ids = roomData.game_data.winner_ids;
+
+      if (Object.keys(roomData.players).length > 1 && winner_ids.length > 0) {
         msg = <h1>
-                  <b className="font-normal text-gray-200">{roomData.players[roomData.game_data.winner_id].name}</b> is the Winner!
+                  <b className="font-normal text-gray-200">{roomData.players[winner_ids[0]].name}</b> is the Winner!
               </h1>;
+
+        if (winner_ids.length > 1) {
+          let names = winner_ids.map(id => {return roomData.players[id].name});
+          names = names.join(', ');
+          names = names.replace(/, (?=[^,]+$)/, " and ");
+
+          msg = <h1 className="max-w-[360px] text-center">
+                  Match ended in a draw between <b className="font-normal text-gray-200">{names}</b>.
+              </h1>;
+        }
       }
 
       let hiddenStyle = ""
