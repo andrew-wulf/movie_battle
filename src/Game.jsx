@@ -369,7 +369,7 @@ export function Game (props) {
                                                     <>
                                                     <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center relative bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
 
-                                                        <div className="absolute text-4xl text-green-600">
+                                                        <div className="absolute text-4xl text-green-600 left-0 top-1/2 -translate-y-1/2 pl-4">
                                                             <HiLink/>
                                                         </div>
 
@@ -448,14 +448,31 @@ export function Game (props) {
                                             if (['director', 'screenplay', 'cinematographer', 'composer', 'editor'].includes(guess.second_role)) {
                                                 role = guess.second_role
                                             }
+
+                                            let roleStyle = "text-lg font-light text-center";
+
+                                            if (role.length > 25) {
+                                                roleStyle = "text-md font-light text-center"
+                                            }
+                                            if (role.length > 35) {
+                                                roleStyle = "text-sm font-light text-center"
+                                            }
         
                                             return (
                                                 <div key={i} className="flex flex-col place-items-center">
                                                     <div className="w-[3px] h-20 bg-[rgb(12,12,31)]/50"/>
                                                     <>
-                                                    <div className="mx-auto w-[240px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
-                                                        <p className="text-lg font-light">{capitalizeFirstLetter(role)}</p>
-                                                        <p className="text-2xl">{guess.name}</p>
+                                                    <div className="relative mx-auto w-[300px] py-2 flex flex-col place-items-center bg-[rgb(12,12,31)] text-[rgb(221,218,199)] rounded-lg">
+                                                        
+                                                        <div className="absolute text-3xl text-[rgb(95,190,76)] left-0 top-1/2 -translate-y-1/2 pl-2">
+                                                            <HiLink/>
+                                                        </div>
+                                                        
+                                                        <div className="flex flex-col place-items-center w-[220px]">
+                                                            <p className={roleStyle}>{capitalizeFirstLetter(role)}</p>
+                                                            <p className="text-2xl text-center">{guess.name}</p>
+                                                        </div>
+                                                        
                                                         <div className="flex flex-row gap-2 font-bold text-xl">
                                                             
                                                         {
